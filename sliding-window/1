@@ -1,0 +1,49 @@
+Given an array, find the average of all subarrays of ‘K’ contiguous elements in it.
+Array: [1, 3, 2, 6, -1, 4, 1, 8, 2], K=5
+
+Bruteforce
+
+const array = [1, 3, 2, 6, -1, 4, 1, 8, 2];
+const K = 5;
+
+let averageSum = [];
+for (let i = 0; i < array.length; i++) {
+    if (i + K > array.length) break;
+
+    let currentSum = 0;
+    for (let j = i; j < i+K; j++) {
+      currentSum += array[j]
+    }
+
+    averageSum.push(currentSum/5);
+}
+
+console.log(`Averages of subarrays of size K: ${averageSum}`);
+// Averages of subarrays of size K: 2.2,2.8,2.4,3.6,2.8
+
+------------
+
+Sliding window
+
+const array = [1, 3, 2, 6, -1, 4, 1, 8, 2];
+const K = 5;
+
+const result = [];
+let windowSum = 0;
+let windowStart = 0;
+let windowEnd = 0;
+
+for (let windowEnd = 0; windowEnd < array.length; windowEnd++) {
+    windowSum += array[windowEnd]
+
+    if (windowEnd === windowStart + K - 1) {
+        result.push(windowSum / K);
+
+        windowSum -= array[windowStart]
+        windowStart += 1;
+        continue;
+    }
+}
+
+console.log(`Averages of subarrays of size K: ${result}`);
+// Averages of subarrays of size K: 2.2,2.8,2.4,3.6,2.8
