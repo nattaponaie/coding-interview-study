@@ -1,0 +1,109 @@
+Given a string, find the length of the longest substring in it with no more than K distinct characters
+
+Example 1:
+Input: String="araaci", K=2
+Output: 4
+Explanation: The longest substring with no more than '2' distinct characters is "araa".
+
+Example 2:
+Input: String="araaci", K=1
+Output: 2
+Explanation: The longest substring with no more than '1' distinct characters is "aa".
+
+Example 3:
+Input: String="cbbebi", K=3
+Output: 5
+Explanation: The longest substrings with no more than '3' distinct characters are "cbbeb" & "bbebi".
+
+Example 4:
+Input: String="cbbebi", K=10
+Output: 6
+Explanation: The longest substring with no more than '10' distinct characters is "cbbebi".
+
+
+1. Use sliding window
+2. Store character with distinct count
+3. Start counting longest character length
+4. if number of distinct > K & windowStart < windowEnd
+    - set new longest character length
+    - get rid of distinct character until < K in while loop
+    - also shrink the window from windowStart
+
+
+const longest_substring_with_k_distinct = function(str, k) {
+    // TODO: Write your code here
+    let windowStart = 0;
+    let dict = {};
+    let longest = 0;
+    let lengthCount = 0;
+
+    for (let windowEnd = 0; windowEnd < str.length; windowEnd++) {
+        if (!(str[windowEnd] in dict)) {
+            dict[str[windowEnd]] = 0
+        }
+
+        dict[str[windowEnd]] += 1
+        lengthCount += 1;
+
+        while (Object.keys(dict).length > k && windowStart < windowEnd) {
+            longest = Math.max(longest, lengthCount - 1);
+
+            if (dict[str[windowStart]] > 1) {
+                dict[str[windowStart]] -= 1;
+            } else {
+                delete dict[str[windowStart]];
+            }
+
+            lengthCount -= 1;
+            windowStart += 1;
+        }
+    }
+
+    return longest
+};
+
+
+
+Input: String="araaci", K=2
+
+araaci
+s
+e
+
+// 1 windowStart = 0, dict = {}, longest = 0, windowEnd = 0
+    // 1 windowStart = 0, dict = {a:1}, longest = 0, windowEnd = 1
+
+araaci
+s
+ e
+
+// 2 windowStart = 0, dict = {a:1}, longest = 0, windowEnd = 1
+    // 2 windowStart = 0, dict = {a:1, r:1}, longest = 0, windowEnd = 2
+
+araaci
+s
+  e
+
+// 3 windowStart = 0, dict = {a:1, r:1}, longest = 0, windowEnd = 2
+    // 3 windowStart = 0, dict = {a:2, r:1}, longest = 0, windowEnd = 3
+
+araaci
+s
+   e
+
+// 4 windowStart = 0, dict = {a:2, r:1}, longest = 0, windowEnd = 3
+    // 4 windowStart = 0, dict = {a:3, r:1}, longest = 0, windowEnd = 4
+
+araaci
+s
+    e
+
+// 5 windowStart = 0, dict = {a:3, r:1}, longest = 0, windowEnd = 4
+    // 5 windowStart = 0, dict = {a:3, r:1, c:1}, longest = 0, windowEnd = 4
+    // 5 windowStart = 1, dict = {a:2, r:1, c:1}, longest = 3, windowEnd = 5
+
+araaci
+ s
+     e
+
+// 6 windowStart = 1, dict = {a:2, r:1, c:1}, longest = 3, windowEnd = 5
