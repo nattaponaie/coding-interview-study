@@ -62,6 +62,8 @@ const longest_substring_with_k_distinct = function(str, k) {
     return longest
 };
 
+Time: O(N + M) where N is str length and M is inner while loop where it process the N element only when windowStart < windowEnd
+Space: O(K) where K is the maximum number of K + 1
 
 
 Input: String="araaci", K=2
