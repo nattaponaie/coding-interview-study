@@ -22,11 +22,10 @@ Algorithm
 - use windowEnd to iterate
 - each iteration
     - if str does not exist in Hashmap
-        - store character in Hashmap
-    - if character does exist in Hashmap
         - set longest substring by comparing current longest with count
         - delete character at windowStart out from Hashmap
         - shift windowStart
+    - store character in Hashmap
 
 
 const non_repeat_substring = function(str) {
