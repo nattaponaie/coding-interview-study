@@ -1,0 +1,54 @@
+Given a string, find the length of the longest substring, which has all distinct characters.
+
+Example 1:
+Input: String="aabccbb"
+Output: 3
+Explanation: The longest substring with distinct characters is "abc".
+
+Example 2:
+Input: String="abbbb"
+Output: 2
+Explanation: The longest substring with distinct characters is "ab".
+
+Example 3:
+Input: String="abccde"
+Output: 3
+Explanation: Longest substrings with distinct characters are "abc" & "cde".
+
+
+Algorithm
+- Sliding window
+    - windowStart = 0, windowEnd = 0
+- use windowEnd to iterate
+- each iteration
+    - if str does not exist in Hashmap
+        - store character in Hashmap
+    - if character does exist in Hashmap
+        - set longest substring by comparing current longest with count
+        - delete character at windowStart out from Hashmap
+        - shift windowStart
+
+
+const non_repeat_substring = function(str) {
+  // TODO: Write your code here
+  let windowStart = 0;
+  let longestSubstring = 0;
+  let charHashmap = {};
+
+  for (let windowEnd = 0; windowEnd < str.length; windowEnd++) {
+      // while ((str[windowEnd] in charHashmap) && windowStart < windowEnd) {
+      if (str[windowEnd] in charHashmap) {
+          longestSubstring = Math.max(longestSubstring, Object.keys(charHashmap).length);
+          
+          delete charHashmap[str[windowStart]];
+          windowStart += 1;
+      }
+
+      charHashmap[str[windowEnd]] = 1;
+  }
+
+  return longestSubstring;
+};
+
+Time: O(N) where N is str length
+Space: O(T) where T is the total number of all distinct character
