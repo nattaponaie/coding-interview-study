@@ -1,0 +1,122 @@
+Given a string and a pattern, find out if the string contains any permutation of the pattern.
+
+Permutation is defined as the re-arranging of the characters of the string. For example, “abc” has the following six permutations:
+
+abc
+acb
+bac
+bca
+cab
+cba
+If a string has ‘n’ distinct characters, it will have n!n! permutations.
+
+Example 1:
+Input: String="oidbcaf", Pattern="abc"
+Output: true
+Explanation: The string contains "bca" which is a permutation of the given pattern.
+
+Example 2:
+Input: String="odicf", Pattern="dc"
+Output: false
+Explanation: No permutation of the pattern is present in the given string as a substring.
+
+Example 3:
+Input: String="bcdxabcdy", Pattern="bcdyabcdx"
+Output: true
+Explanation: Both the string and the pattern are a permutation of each other.
+
+Example 4:
+Input: String="aaacb", Pattern="abc"
+Output: true
+Explanation: The string contains "acb" which is a permutation of the given pattern.
+
+
+---------
+Pattern="abc"
+oidbcaf
+   s
+     e
+
+duplicatePatternDict = {a:0,b:0,c:0}
+---
+
+Pattern="abc"
+aaacb
+  s
+    e
+
+duplicatePatternDict = {a:0,b:0,c:0}
+-----
+
+loop to store patternDict with distinct
+
+duplicatePatternDict
+
+sliding window
+    check if windowEnd does exist in duplicatePatternDict && distinct count > 0
+        duplicatePatternDict[str[windowEnd]] -= 1
+    else
+        windowStart += windowEnd + 1;
+        duplicatePatternDict = patternDict
+
+    if sliding window size === pattern length
+        return true;
+        break;
+
+-------------------
+
+const find_permutation = function(str, pattern) {
+  // TODO: Write your code here
+  let windowStart = 0;
+
+let patternDict = {};
+
+for (const char of pattern) {
+    if (!(char in patternDict)) patternDict[char] = 0;
+    patternDict[char] += 1;
+}
+
+
+let duplicatePatternDict = {...patternDict};
+
+for (let windowEnd = 0; windowEnd < str.length; windowEnd++) {
+    if ((str[windowEnd] in duplicatePatternDict) && duplicatePatternDict[str[windowEnd]] > 0) {
+        duplicatePatternDict[str[windowEnd]] -= 1
+    } else {
+         windowStart += (windowEnd - windowStart) + 1;
+        duplicatePatternDict = {...patternDict};
+        continue;
+    }
+
+    if (windowEnd - windowStart + 1 === pattern.length) {
+        return true;
+    }
+}
+
+return false;
+};
+
+
+Time: O(N + M) where N is str length and M is pattern length
+Space: O(M)
+
+
+---------------
+pattern: abc
+
+aaacb
+  s
+    e
+
+// 1 windowStart = 0; duplicatePatternDict = {a:1,b:1,c:1}; windowEnd = 0;
+    // 1 windowStart = 0; duplicatePatternDict = {a:0,b:1,c:1}; windowEnd = 1;
+// 2 windowStart = 0; duplicatePatternDict = {a:0,b:1,c:1}; windowEnd = 1;
+    // 2 windowStart = 0; duplicatePatternDict = {a:0,b:1,c:1}; windowEnd = 1;
+// 3 windowStart = 0; duplicatePatternDict = {a:0,b:1,c:1}; windowEnd = 1;
+    // 3 windowStart = 2; duplicatePatternDict = {a:1,b:1,c:1}; windowEnd = 2;
+// 4 windowStart = 2; duplicatePatternDict = {a:1,b:1,c:1}; windowEnd = 2;
+    // 4 windowStart = 2; duplicatePatternDict = {a:0,b:1,c:1}; windowEnd = 3;
+// 5 windowStart = 2; duplicatePatternDict = {a:0,b:1,c:1}; windowEnd = 3;
+    // 5 windowStart = 2; duplicatePatternDict = {a:0,b:1,c:0}; windowEnd = 4;
+// 6 windowStart = 2; duplicatePatternDict = {a:0,b:1,c:0}; windowEnd = 4;
+    // 6 windowStart = 2; duplicatePatternDict = {a:0,b:0,c:0}; windowEnd = 4;
