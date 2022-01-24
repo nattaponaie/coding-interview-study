@@ -1,0 +1,116 @@
+Given a string and a pattern, find all anagrams of the pattern in the given string.
+
+Every anagram is a permutation of a string. As we know, when we are not allowed to repeat characters while finding permutations of a string, we get N!N! permutations (or anagrams) of a string having NN characters. For example, here are the six anagrams of the string “abc”:
+
+abc
+acb
+bac
+bca
+cab
+cba
+Write a function to return a list of starting indices of the anagrams of the pattern in the given string.
+
+Example 1:
+Input: String="ppqp", Pattern="pq"
+Output: [1, 2]
+Explanation: The two anagrams of the pattern in the given string are "pq" and "qp".
+
+Example 2:
+Input: String="abbcabc", Pattern="abc"
+Output: [2, 3, 4]
+Explanation: The three anagrams of the pattern in the given string are "bca", "cab", and "abc".
+
+--------
+Pattern="abc"
+abbcabc
+     s
+      e
+
+dict = {a:1,b:0,c:0}
+result = [2, 3, 4]
+
+Pattern="pq"
+ppqp
+  s
+   e
+
+dict = {p:0,q:0}
+result = []
+-------
+
+loop to store pattern with distinct in Hashmap
+
+start sliding window
+    if str[windowEnd] in HashMap and distinct > 0
+        decrease distinct count by 1
+    else
+        increase distinct count of windowStart by 1
+        windowStart += 1
+    
+        if str[windowStart] in HashMap and distinct > 0
+            decrease distinct count by 1
+        else
+            windowStart += 1
+
+    if windowSize equal to pattern size
+        result.push(windowStart)
+
+        increase distinct count of current windowStart by 1
+        windowStart += 1
+
+------
+let windowStart = 0;
+let patternHashMap = {};
+let result = [];
+
+for (const char of pattern) {
+    if (!(char in patternHashMap)) patternHashMap[char] = 0;
+    patternHashMap[char] += 1;
+}
+
+for (let windowEnd = 0; windowEnd < str.length; windowEnd ++) {
+    if ((str[windowEnd] in patternHashMap) && patternHashMap[str[windowEnd]] > 0) {
+        patternHashMap[str[windowEnd]] -= 1;
+    } else {
+        patternHashMap[str[windowStart]] += 1;
+        windowStart += 1;
+
+        if ((str[windowEnd] in patternHashMap) && patternHashMap[str[windowEnd]] > 0) {
+            patternHashMap[str[windowStart]] -= 1;
+        } else {
+            windowStart += 1;
+        }
+    }
+
+    if (windowEnd - windowStart + 1 === pattern.length) {
+        result.push(windowStart);
+
+        patternHashMap[str[windowStart]] += 1;
+        windowStart += 1;
+    }
+}
+
+Time complexity: O(N + M) where N is loop of str length and M is loop of pattern length
+Space complexity: O(M) for the worst case, M is the length of the whole pattern. 
+                Additionally, O(N) space is needed for the length of result list. 
+                However, it will happen only the pattern has only one character and the str contain only that character
+
+-------
+Pattern="pq"
+ppqp
+  s
+   e
+
+// 1 windowStart = 0; patternHashMap = {p:1,q:1}; result = []; windowEnd = 0;
+    // 1 windowStart = 0; patternHashMap = {p:0,q:1}; result = []; windowEnd = 1;
+// 2 windowStart = 0; patternHashMap = {p:0,q:1}; result = []; windowEnd = 1;
+    // 2 windowStart = 1; patternHashMap = {p:1,q:1}; result = []; windowEnd = 1;
+    // 2 windowStart = 1; patternHashMap = {p:0,q:1}; result = []; windowEnd = 2;
+// 3 windowStart = 1; patternHashMap = {p:0,q:1}; result = []; windowEnd = 2;
+    // 3 windowStart = 1; patternHashMap = {p:0,q:0}; result = []; windowEnd = 2;
+    // 3 windowStart = 2; patternHashMap = {p:1,q:0}; result = [1]; windowEnd = 3;
+// 4 windowStart = 2; patternHashMap = {p:1,q:0}; result = [1]; windowEnd = 3;
+    // 4 windowStart = 2; patternHashMap = {p:0,q:0}; result = [1]; windowEnd = 3;
+    
+    
+
