@@ -1,0 +1,158 @@
+Problem Statement#
+Given an array containing 0s and 1s, if you are allowed to replace no more than ‘k’ 0s with 1s, find the length of the longest contiguous subarray having all 1s.
+
+Example 1:
+Input: Array=[0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1], k=2
+Output: 6
+Explanation: Replace the '0' at index 5 and 8 to have the longest contiguous subarray of 1s having length 6.
+
+Example 2:
+Input: Array=[0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 1, 1], k=3
+Output: 9
+Explanation: Replace the '0' at index 6, 9, and 10 to have the longest contiguous subarray of 1s having length 9.
+
+
+0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1
+               s
+                              e
+
+dict = {0:2, 1:4};
+maxLength = 6
+
+
+store 0s or 1s if does not exist as = 0 count
+incrase current char by 1
+
+while loop if 0s count > k
+    decrease dict[str[windowStart]] by 1
+    windowStart += 1
+
+calculate maxLength
+    maxLength = Math.max(maxLength, windowEnd - windowStart + 1)
+
+---------------
+
+let dict = {};
+let maxLength = 0;
+let windowStart = 0;
+
+for (let windowEnd = 0; windowEnd < arr.length; windowEnd++) {
+    if (!(arr[windowEnd] in dict)) {
+        dict[arr[windowEnd]] = 0;
+    }
+    dict[arr[windowEnd]] += 1;
+
+    while(dict[0] > k) {
+        dict[arr[windowStart]] -= 1;
+        windowStart += 1
+    }
+
+    maxLength = Math.max(maxLength, windowEnd - windowStart + 1)
+}
+
+return maxLength;
+
+Time: O(N + M) where N is the array length and M is an inner loop when dict has 0s more than K
+Space: O(1) only 0s and 1s
+
+-------------
+
+0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1
+               s
+                              e
+
+// 1 dict = {}; maxLength = 0; windowStart = 0; windowEnd = 0;
+    // 1 dict = {0:0}; maxLength = 0; windowStart = 0; windowEnd = 0;
+    // 1 dict = {0:1}; maxLength = 0; windowStart = 0; windowEnd = 0;
+    // 1 dict = {0:1}; maxLength = 1; windowStart = 0; windowEnd = 1;
+// 2 dict = {0:1}; maxLength = 1; windowStart = 0; windowEnd = 1;
+    // 2 dict = {0:1, 1:0}; maxLength = 1; windowStart = 0; windowEnd = 1;
+    // 2 dict = {0:1, 1:1}; maxLength = 1; windowStart = 0; windowEnd = 1;
+    // 2 dict = {0:1, 1:1}; maxLength = 2; windowStart = 0; windowEnd = 2;
+// 3 dict = {0:1, 1:1}; maxLength = 2; windowStart = 0; windowEnd = 2;
+    // 3 dict = {0:1, 1:2}; maxLength = 2; windowStart = 0; windowEnd = 2;
+    // 3 dict = {0:1, 1:2}; maxLength = 3; windowStart = 0; windowEnd = 3;
+// 4 dict = {0:1, 1:2}; maxLength = 3; windowStart = 0; windowEnd = 3;
+    // 4 dict = {0:2, 1:2}; maxLength = 3; windowStart = 0; windowEnd = 3;
+    // 4 dict = {0:2, 1:2}; maxLength = 4; windowStart = 0; windowEnd = 4;
+// 5 dict = {0:2, 1:2}; maxLength = 4; windowStart = 0; windowEnd = 4;
+    // 5 dict = {0:3, 1:2}; maxLength = 4; windowStart = 0; windowEnd = 4;
+    // 5 dict = {0:2, 1:2}; maxLength = 4; windowStart = 1; windowEnd = 4;
+    // 5 dict = {0:2, 1:2}; maxLength = 4; windowStart = 1; windowEnd = 5;
+// 6 dict = {0:2, 1:2}; maxLength = 4; windowStart = 1; windowEnd = 5;
+    // 6 dict = {0:3, 1:2}; maxLength = 4; windowStart = 1; windowEnd = 5;
+    // 6 dict = {0:3, 1:1}; maxLength = 4; windowStart = 2; windowEnd = 5;
+    // 6 dict = {0:3, 1:0}; maxLength = 4; windowStart = 3; windowEnd = 5;
+    // 6 dict = {0:2, 1:0}; maxLength = 4; windowStart = 4; windowEnd = 5;
+    // 6 dict = {0:2, 1:0}; maxLength = 4; windowStart = 4; windowEnd = 6;
+// 7 dict = {0:2, 1:0}; maxLength = 4; windowStart = 4; windowEnd = 6;
+    // 7 dict = {0:2, 1:1}; maxLength = 4; windowStart = 4; windowEnd = 7;
+// 8 dict = {0:2, 1:1}; maxLength = 4; windowStart = 4; windowEnd = 7;
+    // 8 dict = {0:2, 1:2}; maxLength = 4; windowStart = 4; windowEnd = 8;
+// 9 dict = {0:2, 1:2}; maxLength = 4; windowStart = 4; windowEnd = 8;
+    // 9 dict = {0:3, 1:2}; maxLength = 4; windowStart = 4; windowEnd = 8;
+    // 9 dict = {0:2, 1:2}; maxLength = 4; windowStart = 5; windowEnd = 8;
+    // 9 dict = {0:2, 1:2}; maxLength = 4; windowStart = 5; windowEnd = 9;
+// 10 dict = {0:2, 1:2}; maxLength = 4; windowStart = 5; windowEnd = 9;
+    // 10 dict = {0:2, 1:3}; maxLength = 4; windowStart = 5; windowEnd = 9;
+    // 10 dict = {0:2, 1:3}; maxLength = 5; windowStart = 5; windowEnd = 10;
+// 11 dict = {0:2, 1:3}; maxLength = 5; windowStart = 5; windowEnd = 10;
+    // 11 dict = {0:2, 1:4}; maxLength = 5; windowStart = 5; windowEnd = 10;
+    // 11 dict = {0:2, 1:4}; maxLength = 6; windowStart = 5; windowEnd = 10;
+
+
+
+---------
+
+0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1
+               s
+                           e
+
+let windowStart = 0;
+let oneCount = 0;
+let maxLength = 0;
+
+for (let windowEnd = 0; windowEnd < arr.length; windowEnd++) {
+    if (arr[windowEnd] === 1) oneCount += 1;
+
+    if ((windowEnd - windowStart + 1) - oneCount > k) {
+        if (arr[windowStart] === 1) oneCount -= 1;
+        windowStart += 1;
+    }
+
+    maxLength = Math.max(maxLength, windowEnd - windowStart + 1)
+}
+
+Time: O(N)
+Space: O(1)
+
+--------------
+
+// 1 windowStart = 0; oneCount = 0; maxLength = 0; windowEnd = 0;
+    // 1 windowStart = 0; oneCount = 0; maxLength = 1; windowEnd = 1;
+// 2 windowStart = 0; oneCount = 0; maxLength = 1; windowEnd = 1;
+    // 2 windowStart = 0; oneCount = 1; maxLength = 2; windowEnd = 2;
+// 3 windowStart = 0; oneCount = 1; maxLength = 2; windowEnd = 2;
+    // 3 windowStart = 0; oneCount = 2; maxLength = 2; windowEnd = 2;
+    // 3 windowStart = 0; oneCount = 2; maxLength = 3; windowEnd = 3;
+// 4 windowStart = 0; oneCount = 2; maxLength = 3; windowEnd = 3;
+    // 4 windowStart = 0; oneCount = 2; maxLength = 4; windowEnd = 4;
+// 5 windowStart = 0; oneCount = 2; maxLength = 4; windowEnd = 4;
+    // 5 windowStart = 1; oneCount = 2; maxLength = 4; windowEnd = 4;
+    // 5 windowStart = 1; oneCount = 2; maxLength = 4; windowEnd = 5;
+// 6 windowStart = 1; oneCount = 2; maxLength = 4; windowEnd = 5;
+    // 6 windowStart = 2; oneCount = 1; maxLength = 4; windowEnd = 5;
+    // 6 windowStart = 2; oneCount = 1; maxLength = 4; windowEnd = 6;
+// 7 windowStart = 2; oneCount = 1; maxLength = 4; windowEnd = 6;
+    // 7 windowStart = 2; oneCount = 2; maxLength = 4; windowEnd = 6;
+    // 7 windowStart = 3; oneCount = 1; maxLength = 4; windowEnd = 6;
+    // 7 windowStart = 3; oneCount = 1; maxLength = 4; windowEnd = 7;
+// 8 windowStart = 3; oneCount = 1; maxLength = 4; windowEnd = 7;
+    // 8 windowStart = 3; oneCount = 2; maxLength = 4; windowEnd = 7;
+    // 8 windowStart = 4; oneCount = 1; maxLength = 4; windowEnd = 8;
+// 9 windowStart = 4; oneCount = 1; maxLength = 4; windowEnd = 8;
+    // 9 windowStart = 4; oneCount = 2; maxLength = 4; windowEnd = 8;
+    // 9 windowStart = 5; oneCount = 1; maxLength = 4; windowEnd = 9;
+// 10 windowStart = 5; oneCount = 1; maxLength = 4; windowEnd = 9;
+    // 10 windowStart = 5; oneCount = 2; maxLength = 4; windowEnd = 9;
+    // 10 windowStart = 5; oneCount = 2; maxLength = 4; windowEnd = 9;
