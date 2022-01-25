@@ -1,0 +1,87 @@
+Problem Statement#
+Given an array of sorted numbers, remove all duplicates from it. 
+You should not use any extra space; after removing the duplicates in-place return the length of the subarray that has no duplicate in it.
+
+Example 1:
+Input: [2, 3, 3, 3, 6, 9, 9]
+Output: 4
+Explanation: The first four elements after removing the duplicates will be [2, 3, 6, 9].
+
+Example 2:
+Input: [2, 2, 2, 11]
+Output: 2
+Explanation: The first two elements after removing the duplicates will be [2, 11].
+
+--------
+
+apply two pointers
+
+pLeft = 0;
+pRight = arr.length - 1;
+keep tracking previous subtract result
+
+while (pLeft < pRight) {
+    if current subtract equal to previous subtract result or zero
+        slice pRight out from arr
+
+    set new previous subtract result
+}
+
+Time complexity: O(N)
+Space complexity: O(1)
+
+--------
+
+let pLeft = 0, pRight = arr.length - 1, prevSubtract = 0;
+
+while (pLeft < pRight) {
+    const currentSubtract = arr[pRight] - arr[pLeft];
+
+    if (currentSubtract === prevSubtract || currentSubtract === 0) {
+        arr.splice(pRight, 1);
+    }
+
+    prevSubtract = currentSubtract;
+    pRight -= 1;
+}
+
+return arr.length;
+
+---------
+
+Input: [2, 3, 3, 3, 6, 9, 9]
+Output: 4
+
+// 1 pLeft = 0, pRight = 6, prevSubtract = 0, arr = [2, 3, 3, 3, 6, 9, 9]
+    // 1 pLeft = 0, pRight = 5, prevSubtract = 7, arr = [2, 3, 3, 3, 6, 9, 9]
+// 2 pLeft = 0, pRight = 5, prevSubtract = 7, arr = [2, 3, 3, 3, 6, 9, 9]
+    // 2 pLeft = 0, pRight = 4, prevSubtract = 7, arr = [2, 3, 3, 3, 6, 9]
+// 3 pLeft = 0, pRight = 4, prevSubtract = 7, arr = [2, 3, 3, 3, 6, 9]
+    // 3 pLeft = 0, pRight = 3, prevSubtract = 4, arr = [2, 3, 3, 3, 6, 9]
+// 4 pLeft = 0, pRight = 3, prevSubtract = 4, arr = [2, 3, 3, 3, 6, 9]
+    // 4 pLeft = 0, pRight = 2, prevSubtract = 1, arr = [2, 3, 3, 3, 6, 9]
+// 5 pLeft = 0, pRight = 2, prevSubtract = 1, arr = [2, 3, 3, 3, 6, 9]
+    // 5 pLeft = 0, pRight = 1, prevSubtract = 1, arr = [2, 3, 3, 6, 9]
+// 6 pLeft = 0, pRight = 1, prevSubtract = 1, arr = [2, 3, 3, 6, 9]
+    // 6 pLeft = 0, pRight = 0, prevSubtract = 1, arr = [2, 3, 6, 9]
+
+
+-----------
+
+Another approach
+
+2,3,6,9,6,9,9
+        n
+            i
+
+nextNonDuplicate = 1;
+i = 1;
+
+while (i < arr.length) {
+    if (arr[nextNonDuplicate - 1] !== arr[i]) {
+        arr[nextNonDuplicate] = arr[i]
+        nextNonDuplicate += 1;
+    }
+
+    i += 1;
+}
