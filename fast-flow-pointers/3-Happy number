@@ -1,0 +1,71 @@
+Problem Statement#
+Any number will be called a happy number if, after repeatedly replacing it with a number equal to the sum of the square of all of its digits, leads us to number ‘1’. All other (not-happy) numbers will never reach ‘1’. Instead, they will be stuck in a cycle of numbers which does not include ‘1’.
+
+Example 1:
+Input: 23   
+Output: true (23 is a happy number)  
+
+Example 2:
+Input: 12   
+Output: false (12 is not a happy number)  
+Step ‘13’ leads us back to step ‘5’ as the number becomes equal to ‘89’, this means that we can never reach ‘1’, therefore, ‘12’ is not a happy number.
+
+#1 Approach
+
+declare sumDict as Hashmap
+declare isHappyNumber as false
+
+start iteration
+find sum of all square digits
+		join with , and split it as array
+		
+iterate through array of digits
+	square a digit
+	sum digit
+
+	check if sum is equal to 1
+		set isHappyNumber to true
+		break the iteration
+	check if sum does exist in sumDict
+		break the iteration
+
+—---------------
+Time complexity: O(N)
+Space complexity: O(N)
+—---------------
+
+—-----------------------------------
+
+#2 Approach
+
+Time complexity: O(log N)
+Space complexity: O(1)
+
+
+function find_happy_number(num) {
+	let slowPointerNum = num;
+	let fastPointerNum = num;
+
+	while (true) {
+        slowPointerNum = findSumOfDigits(slowPointerNum);
+        fastPointerNum = findSumOfDigits(findSumOfDigits(fastPointerNum));
+
+        if (slowPointerNum === fastPointerNum) {
+            break;
+        }
+  	}
+
+  	return fastPointerNum === 1;
+}
+
+function findSumOfDigits(num) {
+	let sum = 0;
+	let currentNum = num;
+	while (currentNum > 0) {
+		const digit = currentNum % 10;
+		sum += digit * digit;
+		currentNum = Math.floor(currentNum / 10);
+    }
+    return sum;
+}
+
