@@ -1,0 +1,91 @@
+#1 Approach
+
+find the length of cycle Linked list and define it as K length
+
+define 2 pointers
+
+1st pointer start at head node
+2nd pointer start at node K
+
+start iteration
+	if node at 1st pointer with node at 2nd pointer
+		return node
+else	
+	increase 1st and 2nd pointer by 1
+
+-------------------------------------
+Time complexity: O(N)
+Space complexity: O(1)
+-------------------------------------
+
+class Node {
+  constructor(value, next=null){
+    this.value = value;
+    this.next = next;
+  }
+}
+
+const find_cycle_start = function(head){
+    const cycleLength = find_cycle_length(head)
+    if (cycleLength === 0) return null;
+
+    let firstPointerNode = head;
+    let secondPointerNode = head;
+
+    for (let i = 1; i <= cycleLength; i++) {
+        secondPointerNode = secondPointerNode.next;
+    }
+
+    while(firstPointerNode != secondPointerNode) {
+        firstPointerNode = firstPointerNode.next;
+        secondPointerNode = secondPointerNode.next;
+    }
+
+    return secondPointerNode;
+};
+
+const find_cycle_length = function(head) {
+    let slowPointerNode = head;
+    let fastPointerNode = head;
+
+    while (fastPointerNode != null && fastPointerNode.next != null) {
+        slowPointerNode = slowPointerNode.next;
+        fastPointerNode = fastPointerNode.next.next;
+        if (slowPointerNode == fastPointerNode) {
+            return calculateLength(fastPointerNode);
+        }
+    }
+
+    return 0;
+}
+
+const calculateLength = function(node) {
+    let count = 1;
+    const startingNode = node;
+    let currentNode = node.next;
+
+    while (startingNode != currentNode) {
+        count += 1;
+        currentNode = currentNode.next;
+    }
+    return count;
+}
+
+
+
+
+head = new Node(1)
+head.next = new Node(2)
+head.next.next = new Node(3)
+head.next.next.next = new Node(4)
+head.next.next.next.next = new Node(5)
+head.next.next.next.next.next = new Node(6)
+
+head.next.next.next.next.next.next = head.next.next
+console.log(`LinkedList cycle start: ${find_cycle_start(head).value}`)
+
+head.next.next.next.next.next.next = head.next.next.next
+console.log(`LinkedList cycle start: ${find_cycle_start(head).value}`)
+
+head.next.next.next.next.next.next = head
+console.log(`LinkedList cycle start: ${find_cycle_start(head).value}`)
