@@ -1,0 +1,62 @@
+Problem Statement #
+Given a list of intervals, merge all the overlapping intervals to produce a list that has only mutually exclusive intervals.
+
+Example 1:
+Intervals: [[1,4], [2,5], [7,9]]
+Output: [[1,5], [7,9]]
+Explanation: Since the first two intervals [1,4] and [2,5] overlap, we merged them into 
+one [1,5].
+
+
+# 1 Approach
+
+Apply Merge Intervals technique
+
+sort Intervals
+
+declare start variable as intervals[0].start
+declare end variable as intervals[0].end
+
+declare result as empty array
+
+start iteration in intervals length at index 1
+	check if current interval start <= end
+		set end variable as max(current interval end, end)
+	else
+		add element [start, end] to result array
+		set start as current interval start
+		set end as current interval end
+		
+add the last element to result
+
+—--------
+Time complexity:
+	sorting Intervals O(N * logN)
+	iteration O(N)
+	summary = O(N * logN)
+Space complexity: O(N) 
+
+—--------
+
+
+
+
+if (intervals.length < 2) return intervals;
+intervals.sort((a,b) => a.start - b.start);
+const result = [];
+
+let start = intervals[0].start;
+let end = intervals[0].end;
+const result = [];
+
+for (let i = 1; i < intervals.length; i++) {
+	if (intervals[i].start <= end) {
+		end = Math.max(end, intervals[i].end);
+		continue;
+	}
+	result.push(new Interval(start, end));
+	start = intervals[i].start;
+	end = intervals[i].end;
+}
+
+result.push(new Interval(start,end));
