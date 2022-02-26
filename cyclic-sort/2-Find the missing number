@@ -9,14 +9,26 @@ Example 2:
 Input: [8, 3, 5, 2, 4, 6, 0, 1]
 Output: 7
 
-let result = 0;
+const find_missing_number = function(nums) {
+  let i = 0;
+  while (i < nums.length) {
+    const itsPositionIdx = nums[i]
 
-for (let i = 0; i < nums.length; i++) {
-	if (nums[i] !== 0) continue;
-	result = i+1;
-}
+    if (itsPositionIdx < nums.length && nums[i] !== nums[itsPositionIdx]) {
+      [nums[i], nums[itsPositionIdx]] = [nums[itsPositionIdx], nums[i]]
+      continue;
+    }
 
-return result;
+    i += 1;
+  }
+
+  for (i = 0; i < nums.length; i++) {
+    if (nums[i] !== i) {
+      return i;
+    }
+  }
+
+};
 
 
 —-----
