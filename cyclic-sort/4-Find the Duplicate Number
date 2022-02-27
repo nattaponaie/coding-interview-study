@@ -18,10 +18,10 @@ while (i < nums.length) {
 	const itsPositionNum = nums[i] - 1;
 	if (nums[i] !== nums[itsPositionNum]) {
 		[nums[i], nums[itsPositionNum]] = [nums[itsPositionNum], nums[i]];
-} else {
-	if (i !== itsPositionNum) return nums[i]
-	i += 1;
-}
+	} else {
+		if (i !== itsPositionNum) return nums[i]
+		i += 1;
+	}
 }
 
 [1, 4, 4, 3, 2] i = 0
