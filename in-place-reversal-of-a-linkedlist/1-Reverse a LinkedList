@@ -1,0 +1,26 @@
+Problem Statement #
+Given the head of a Singly LinkedList, reverse the LinkedList. Write a function to return the new head of the reversed LinkedList.
+
+Example 1
+Input: 2 4 6 8 10 
+Output: 10 8 6 4 2
+
+let current = head;
+let previous = null;
+
+while (current !== null) {
+	const cloneNextCurrentNode = current.next;
+	current.next = previous;
+	previous = current
+	current = cloneNextCurrentNode;
+}
+
+return previous;
+
+Time complexity: O(N)
+Space complexity: O(1)
+
+# 1 current = 2, current.next = 4, previous = null, cloneNextCurrentNode = null
+# 1 current = 4, current.next = null, previous = 2, cloneNextCurrentNode = 4
+# 1 current = 4, current.next = 6, previous = 2, cloneNextCurrentNode = 4
+	
