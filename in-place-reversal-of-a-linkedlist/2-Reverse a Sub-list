@@ -1,0 +1,48 @@
+Problem Statement#
+Given the head of a LinkedList and two positions ‘p’ and ‘q’, reverse the LinkedList from position ‘p’ to ‘q’.
+
+Example:  
+p=2, q=4 
+ head  
+    1, 2, 3, 4, 5, null   
+    1, 4, 3, 2, 5, null
+
+
+if (Math.abs(p - q) < 1) return head;
+
+const reverseLinkedList = (head) => {
+	let current = head.next;
+	let previous = head;
+	const reversedHead = head;
+
+	while (current !== null) {
+		const cloneCurrentNextNode = current.next;
+		current.next = previous;
+		previous = current;
+        current = cloneCurrentNextNode;
+
+		if (previous.value === q) {
+			reversedHead.next = cloneCurrentNextNode;
+            return previous;
+        }
+    }
+}
+
+
+let current = head;
+let previous = null;
+while (current !== null) {
+	if (current.value === p) {
+		previous.next = reverseLinkedList(current);
+		break;
+    } else {
+        const cloneCurrentNode = current;
+        current = current.next;
+        previous = cloneCurrentNode;
+    }
+}
+
+return previous;
+
+Time complexity: O(N-q) + O(q-r) = O(N)
+Space complexity: O(1)
