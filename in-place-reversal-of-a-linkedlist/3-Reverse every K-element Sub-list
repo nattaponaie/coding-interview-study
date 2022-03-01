@@ -1,0 +1,109 @@
+Problem Statement#
+Given the head of a LinkedList and a number ‘k’, reverse every ‘k’ sized sub-list starting from the head.
+
+If, in the end, you are left with a sub-list with less than ‘k’ elements, reverse it too.
+Example: k=3
+
+Original
+head 
+1 2 3 4 5 6 7 8 null 
+
+Reversed
+head 
+3 2 1 6 5 4 8 7 null
+
+
+#1 Approach
+
+const reverse_every_k_elements = function(head, k) {
+
+	let current = head;
+	let previous = null;
+	let lastNodeOfPreviousP = previous;
+	let kCount = 0;
+	let p = null, q = null;
+
+	const reverseSublist = (p, q) => {
+		let current = p.next;
+		let previous = p;
+
+
+		while (current !== null) {
+			const cloneCurrentNextNode = current.next;
+			current.next = previous;
+			previous = current;
+			current = cloneCurrentNextNode;
+
+			if (previous.value === q.value) {
+				p.next = null;
+				return previous;
+			}
+		}
+	}
+
+	while (current !== null) {
+		if (kCount === 0) {
+			lastNodeOfPreviousP = previous;
+			p = current;
+		}
+
+		if (kCount < k) {
+			const cloneCurrentNode = current;
+			current = current.next;
+			previous = cloneCurrentNode;
+
+			kCount += 1;
+		} else {
+			q = previous;
+			const reversedSubList = reverseSublist(p, q);
+			previous = p;
+
+			if (lastNodeOfPreviousP !== null) {
+				lastNodeOfPreviousP.next = reversedSubList;
+			} else head = reversedSubList
+
+			p.next = current;
+			kCount = 0;
+		}
+
+
+	}
+
+	if (kCount > 1 && kCount <= k) {
+		const reversedSubList = reverseSublist(p, previous);
+		lastNodeOfPreviousP.next = reversedSubList;
+	}
+
+	return head;
+}
+
+
+#2 Approach
+const reverse_every_k_elements = function(head, k) {
+  	let current = head;
+	let previous = null;
+
+	while (current !== null) {
+		const lastNodeOfPrevious = previous; // null, 1
+		const lastNodeOfSublist = current; // 1, 4
+
+		for (let i = 0; i < k; i++) {
+			if (current === null) break;
+			const cloneNextCurrentNode = current.next;
+			current.next = previous;
+			previous = current;
+			current = cloneNextCurrentNode;
+		}
+		// 3 2 1 null, 
+
+		if (lastNodeOfPrevious !== null) lastNodeOfPrevious.next = previous
+		else head = previous; // 3
+
+		lastNodeOfSublist.next = current;
+		// 3 2 1 4 5 6 7 8 null
+		previous = lastNodeOfSublist;
+	}
+
+	return head
+
+}
