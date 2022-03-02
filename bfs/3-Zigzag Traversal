@@ -1,0 +1,42 @@
+const queue = [root];
+let isLeftToRight = true;
+const result = [];
+
+while (queue.length > 0) {
+	const nodesInCurrentLevel = [];
+	const currentQueueLength = queue.length;
+	for (i = 0; i < currentQueueLength; i++) {
+		const currentNode = queue.shift();
+
+		if (isLeftToRight) nodesInCurrentLevel.push(currentNode.value);
+		else nodesInCurrentLevel.unshift(currentNode.value);
+
+		if (currentNode.left !== null) queue.push(currentNode.left);
+		if (currentNode.right !== null) queue.push(currentNode.right);
+    }
+
+    result.push(nodesInCurrentLevel);
+    isLeftToRight = !isLeftToRight;
+}
+
+return result;
+
+#1 queue = [12], isLeftToRight = true, result = [], nodesInCurrentLevel = []
+	#1 queue = [], isLeftToRight = true, result = [], nodesInCurrentLevel  = [12]
+	#1 queue = [7, 1], isLeftToRight = true, result = [], nodesInCurrentLevel  = [12]
+	#1 queue = [7, 1], isLeftToRight = false, result = [12], nodesInCurrentLevel  = [12]
+#2 queue = [7, 1], isLeftToRight = false, result = [12], nodesInCurrentLevel  = []
+	#2 queue = [1, 9], isLeftToRight = false, result = [12], nodesInCurrentLevel  = [7]
+	#2 queue = [9, 10, 5], isLeftToRight = false, result = [12], nodesInCurrentLevel  = [1, 7]
+	#2 queue = [9, 10, 5], isLeftToRight = true, result = [[12], [1,7]], nodesInCurrentLevel  = [1, 7]
+#3 queue = [9,10,5], isLeftToRight = true, result = [[12], [1,7]], nodesInCurrentLevel  = []
+#3 queue = [10,5], isLeftToRight = true, result = [[12], [1,7]], nodesInCurrentLevel  = [9]
+#3 queue = [20,17], isLeftToRight = true, result = [[12], [1,7]], nodesInCurrentLevel  = [9, 10,5]
+#3 queue = [20,17], isLeftToRight = false, result = [[12],[1,7],[9,10,5]], nodesInCurrentLevel  = []
+
+Time complexity#
+The time complexity of the above algorithm is O(N)O(N), where ‘N’ is the total number of nodes in the tree. This is due to the fact that we traverse each node once.
+
+Space complexity#
+The space complexity of the above algorithm will be O(N)O(N) as we need to return a list containing the level order traversal. We will also need O(N)O(N) space for the queue. Since we can have a maximum of N/2N/2 nodes at any level (this could happen only at the lowest level), therefore we will need O(N)O(N) space to store them in the queue.
+
