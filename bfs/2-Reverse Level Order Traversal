@@ -1,0 +1,37 @@
+Problem Statement#
+Given a binary tree, populate an array to represent its level-by-level traversal in reverse order, i.e., 
+the lowest level comes first. You should populate the values of all nodes in each level from left to right in separate sub-arrays.
+
+Input
+            1   
+
+    2               3    
+
+4       5       6       7
+
+Output
+[[4,5,6,7],[2,3],[1]]
+
+
+const traverse = function(root) {
+    const queue = [root]
+    let result = [];
+
+    while (queue.length > 0) {
+        const nodesInCurrentLevel = [];
+        const currentQueueLength = queue.length;
+        for (let i = 0; i < currentQueueLength ; i++) {
+            const currentNode = queue.shift();
+            nodesInCurrentLevel.push(currentNode.value);
+            if (currentNode.left !== null) queue.push(currentNode.left);
+            if (currentNode.right !== null) queue.push(currentNode.right);
+        }
+
+        result = [[...nodesInCurrentLevel], ...result];
+    }
+
+    return result;
+}
+
+Time complexity: O(N)
+Space complexity: O(N)
