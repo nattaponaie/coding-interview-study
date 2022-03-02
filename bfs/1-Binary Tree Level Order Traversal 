@@ -12,7 +12,6 @@ Output
 [[1],[2,3],[4,5,6,7]] 
 
 
-
 const traverse = function(root) {
   let queue = [root];
   result = [];
@@ -32,3 +31,6 @@ const traverse = function(root) {
   return result;
 
 };
+
+Time complexity: O(N)
+Space complexity: O(N)
