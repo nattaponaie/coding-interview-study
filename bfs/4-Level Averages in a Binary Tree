@@ -1,0 +1,39 @@
+const queue = [root];
+const result = [];
+
+while (queue.length > 0) {
+	let currentLevelSum = 0;
+	const currentQueueLength = queue.length;
+	for (let i = 0; i < currentQueueLength; i++) {
+		const currentNode = queue.shift();
+		currentLevelSum += currentNode.value;
+		
+		if (currentNode.left !== null) queue.push(currentNode.left);
+		if (currentNode.right !== null) queue.push(currentNode.right);
+}
+result.push(currentLevelSum / currentQueueLength);
+}
+
+return result;
+
+Time complexity#
+The time complexity of the above algorithm is O(N)O(N), where ‘N’ is the total number of nodes in the tree. This is due to the fact that we traverse each node once.
+
+Space complexity#
+The space complexity of the above algorithm will be O(N)O(N) which is required for the queue. Since we can have a maximum of N/2N/2 nodes at any level (this could happen only at the lowest level), therefore we will need O(N)O(N) space to store them in the queue.
+
+
+#1 queue = [12], result = [], currentLevelSum = 0, currentQueueLength = 1
+	#1 queue = [7,1], result = [], currentLevelSum = 12, currentQueueLength = 1
+	#1 queue = [7,1], result = [12], currentLevelSum = 12, currentQueueLength = 1
+#2 queue = [7,1], result = [12], currentLevelSum = 0, currentQueueLength = 2
+	#2 queue = [9,2,10,5], result = [12], currentLevelSum = 8, currentQueueLength = 2
+	#2 queue = [9,2,10,5], result = [12,4], currentLevelSum = 8, currentQueueLength = 2
+#3 queue = [9,2,10,5], result = [12,4], currentLevelSum = 0, currentQueueLength = 0
+#3 queue = [2,10,5], result = [12,4], currentLevelSum = 9, currentQueueLength = 4
+#3 queue = [10,5], result = [12,4], currentLevelSum = 11, currentQueueLength = 4
+#3 queue = [5], result = [12,4], currentLevelSum = 21, currentQueueLength = 4
+#3 queue = [], result = [12,4], currentLevelSum = 26, currentQueueLength = 4
+#3 queue = [], result = [12,4,6.5], currentLevelSum = 26, currentQueueLength = 4
+
+
