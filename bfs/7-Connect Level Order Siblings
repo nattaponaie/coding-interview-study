@@ -1,0 +1,58 @@
+const queue = [root];
+
+while (queue.length > 0) {
+	const currentQueueLength = queue.length;
+	for (let i = 0; i < currentQueueLength; i++) {
+		const currentNode = queue.shift();
+
+		if (queue.length > 0 && currentQueueLength - i > 1) {
+            currentNode.next = queue[0];
+        } else {
+            currentNode.next = null;	
+        }
+
+        if (currentNode.left !== null) queue.push(currentNode.left);
+        if (currentNode.right !== null) queue.push(currentNode.right);
+    }
+}
+
+return root;
+
+Time complexity: O(N) where N is the number of nodes in binary tree
+Space complexity: O(N) where N is the number of nodes in each level
+
+#1 queue = [12], currentNode = null
+	#1 queue = [], currentNode = 12, root = [12.next = null]
+	#1 queue = [7,1], currentNode = 12, root = [12.next = null]
+#2 queue = [7,1], currentNode = null, root = [12.next = null]
+	#2 queue = [1,9], currentNode = 7, root = [12.next = null, 7.next = 1]
+	#2 queue = [9,10,5], currentNode = 1, root = [12.next = null, 7.next = 1, 1.next = null]
+#3 queue = [9,10,5], currentNode = null, root = [12.next = null, 7.next = 1, 1.next = null]
+	#3 queue = [10,5], currentNode = 9, root = [12.next = null, 7.next = 1, 1.next = null, 9.next = 10]
+	#3 queue = [5], currentNode = 10, root = [12.next = null, 7.next = 1, 1.next = null, 9.next = 10, 10.next = 5]
+	#3 queue = [], currentNode = 5, root = [12.next = null, 7.next = 1, 1.next = null, 9.next = 10, 10.next = 5, 5.next = null]
+
+
+
+
+
+
+
+
+#2 Approach
+
+const queue = [root]
+while (queue.length > 0) {
+	const currentQueueLength = queue.length;
+	let previousNode = null;
+	for (let i = 0; i < currentQueueLength; i++) {
+		const currentNode = queue.shift();
+		if (previousNode !== null) current.next = previousNode;
+		previousNode = currentNode;
+
+		if (currentNode.left !== null) queue.push(currentNode.left);
+		if (currentNode.right !== null) queue.push(currentNode.right);
+    }
+}
+
+return root;
