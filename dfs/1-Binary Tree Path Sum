@@ -1,0 +1,39 @@
+#1 Approach
+const traverse = (node, currentSum) => {
+	const addSum = currentSum + node.value;
+	if (node.left !== null) {
+        const isFound = traverse(node.left, addSum);
+        if (isFound) return true;
+    }
+    if (node.right !== null) {
+        const isFound = traverse(node.right, addSum);
+        if (isFound) return true;
+    }
+
+	if (node.left === null && node.right === null && addSum === sum)  return true;
+
+    return false;
+}
+
+return traverse(root, 0);
+
+#1 node = 12, currentSum = 0, addSum = 0
+#1 node = 12, currentSum = 0, addSum = 12
+	#1 node = 7, currentSum = 12, addSum = 0
+	#1 node = 7, currentSum = 12, addSum = 19
+		#1 node = 9, currentSum = 19, addSum = 0
+		#1 node = 9, currentSum = 19, addSum = 28
+
+
+#2 Approach
+function hasPath(root, sum) {
+    if (root === null) return false;
+	if (root.left === null && root.right === null && sum === root.value) return true;
+
+	const subtractSum = sum - root.value;
+	if (hasPath(root.left, subtractSum) || hasPath(root.right, subtractSum)) {
+        return true;
+    }
+
+	return false;
+}
