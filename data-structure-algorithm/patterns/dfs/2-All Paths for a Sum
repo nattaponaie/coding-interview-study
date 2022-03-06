@@ -1,0 +1,72 @@
+Problem Statement#
+Given a binary tree and a number ‘S’, find all paths from root-to-leaf such that the sum of all the node values of each path equals ‘S’.
+
+function find_paths(root, sum) {
+  const allPaths = [];
+
+  const traverse = (node, currentSum, paths) => {
+    if (node === null) return;
+    paths.push(node.val)
+
+    if (node.left === null && node.right === null && node.val === currentSum) {
+      allPaths.push([...paths])
+    } else {
+      traverse(node.left, currentSum - node.val, paths);
+      traverse(node.right, currentSum - node.val, paths);
+    }
+
+    paths.pop();
+  }
+
+  traverse(root, sum, []);
+  return allPaths;
+}
+
+
+
+#1 allPaths = [], node = 12, paths = []
+	#1 allPaths = [], node = 12, paths = [12]
+		#1 allPaths = [], node = 12, paths = [12,7]
+			#1 allPaths = [], node = 12, paths = [12,7,4]
+			#1 allPaths = [[12,7,4]], node = 12, paths = [12,7,4]
+			#1 allPaths = [[12,7,4]], node = 12, paths = [12,7]
+	#1 allPaths = [[12,7,4]], node = 12, paths = [12]
+#1 allPaths = [[12,7,4]], node = 12, paths = [12,1]
+	#1 allPaths = [[12,7,4]], node = 12, paths = [12,1,10]
+		#1 allPaths = [[12,7,4],[12,1,10]], node = 12, paths = [12,1]
+	#1 allPaths = [[12,7,4],[12,1,10]], node = 12, paths = [12,1,5]
+			#1 allPaths = [[12,7,4],[12,1,10]], node = 12, paths = [12,1]
+	#1 allPaths = [[12,7,4],[12,1,10]], node = 12, paths = [12]
+
+
+Time complexity#
+The time complexity of the above algorithm is O(N^2)O(N2), where ‘N’ is the total number of nodes in the tree. 
+This is due to the fact that we traverse each node once (which will take O(N)O(N)), 
+and for every leaf node, we might have to store its path (by making a copy of the current path) which will take O(N)O(N).
+
+We can calculate a tighter time complexity of O(NlogN)O(NlogN) from the space complexity discussion below.
+
+Space complexity#
+If we ignore the space required for the allPaths list, 
+the space complexity of the above algorithm will be O(N)O(N) in the worst case. 
+This space will be used to store the recursion stack. The worst-case will happen when the given tree is a linked list (i.e., every node has only one child).
+
+How can we estimate the space used for the allPaths array? Take the example of the following balanced tree:
+
+Here we have seven nodes (i.e., N = 7). Since, for binary trees, 
+there exists only one path to reach any leaf node, 
+we can easily say that total root-to-leaf paths in a binary tree can’t be more than the number of leaves. 
+As we know that there can’t be more than (N+1)/2(N+1)/2 leaves in a binary tree, 
+therefore the maximum number of elements in allPaths will be O((N+1)/2) = O(N)O((N+1)/2)=O(N). 
+Now, each of these paths can have many nodes in them. For a balanced binary tree (like above), 
+each leaf node will be at maximum depth. As we know that the depth (or height) of a balanced binary tree is O(logN)O(logN) we can say that, 
+at the most, each path can have logNlogN nodes in it. This means that the total size of the allPaths list will be O(N*logN)O(N∗logN). 
+If the tree is not balanced, we will still have the same worst-case space complexity.
+
+From the above discussion, we can conclude that our algorithm’s overall space complexity is O(N*logN)O(N∗logN).
+
+Also, from the above discussion, since for each leaf node, in the worst case, 
+we have to copy log(N)log(N) nodes to store its path; therefore, 
+the time complexity of our algorithm will also be O(N*logN)O(N∗logN).
+
+
