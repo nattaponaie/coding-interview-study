@@ -1,0 +1,41 @@
+const find_sum_of_path_numbers = function(root) {
+    const traverse = (node, pathNumbers) => {
+        if (node === null) return 0;
+
+        pathNumbers = pathNumbers + node.value;
+        if (node.left === null && node.right === null) {
+            return parseInt(pathNumbers);
+        }
+
+        return traverse(node.left, pathNumbers) + traverse(node.right, pathNumbers);
+    }	
+    return traverse(root, '');
+};
+
+
+Time complexity: O(N) where n is the number of node in binary tree
+Space complexity: O(N) where n is the space for recursion stack
+
+#1 sum = 0, node = 1, pathNumbers = 
+	#1 sum = 0, node = 1, pathNumbers = 1
+		#1 sum = 0, node = 0, pathNumbers = 1
+		#1 sum = 0, node = 0, pathNumbers = 10
+			#1 sum = 0, node = 1, pathNumbers = 10
+			#1 sum = 101, node = 1, pathNumbers = 101
+			#1 sum = 101, node = 1, pathNumbers = 10
+		#1 sum = 101, node = 1, pathNumbers = 1
+	#1 sum = 101, node = 1, pathNumbers = 1
+		#1 sum = 101, node = 1, pathNumbers = 1
+		#1 sum = 101, node = 1, pathNumbers = 11
+			#1 sum = 101, node = 6, pathNumbers = 116
+			#1 sum = 217, node = 6, pathNumbers = 116
+			#1 sum = 217, node = 6, pathNumbers = 11
+		#1 sum = 217, node = 1, pathNumbers = 11
+		#1 sum = 217, node = 5, pathNumbers = 11
+		#1 sum = 217, node = 5, pathNumbers = 115
+		#1 sum = 332, node = 5, pathNumbers = 115
+		#1 sum = 332, node = 5, pathNumbers = 11
+	#1 sum = 332, node = 1, pathNumbers = 1
+	#1 sum = 332, node = 1, pathNumbers = 1
+
+
