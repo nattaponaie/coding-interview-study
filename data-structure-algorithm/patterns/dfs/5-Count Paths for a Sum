@@ -1,0 +1,37 @@
+const count_paths = function(root, S) {
+	const findMatchSum = (paths) => {
+		let matchCount = 0;
+		let sum = 0;
+		for (let i = paths.length - 1; i >= 0; i--) {
+            sum += paths[i];
+            if (sum === S) matchCount += 1;
+        }
+        return matchCount;
+    }
+
+	const dfs = (node, paths) => {
+        if (node === null) return 0;
+        paths.push(node.value);
+
+        let matchSumCount = 0;
+        matchSumCount += findMatchSum(paths);
+
+        matchSumCount += dfs(node.left, paths);
+        matchSumCount += dfs(node.right, paths);
+
+        paths.pop(); // O(1)
+        return matchSumCount;
+    }
+    return dfs(root, []);
+};
+
+
+Time complexity#
+The time complexity of the above algorithm is O(N^2)O(N2) in the worst case, where ‘N’ is the total number of nodes in the tree. This is due to the fact that we traverse each node once, but for every node, we iterate the current path. The current path, in the worst case, can be O(N)O(N) (in the case of a skewed tree). But, if the tree is balanced, then the current path will be equal to the height of the tree, i.e., O(logN)O(logN). So the best case of our algorithm will be O(NlogN)O(NlogN).
+
+Space complexity#
+The space complexity of the above algorithm will be O(N)O(N). This space will be used to store the recursion stack. The worst case will happen when the given tree is a linked list (i.e., every node has only one child). We also need O(N)O(N) space for storing the currentPath in the worst case.
+
+Overall space complexity of our algorithm is O(N)O(N).
+
+
