@@ -1,0 +1,35 @@
+Problem Statement#
+Given a binary tree and a number sequence, find if the sequence is present as a root-to-leaf path in the given tree.
+
+
+const find_path = function(root, sequence) {
+	const dfs = (node, currentLevel) => {
+		if (node === null) return false;
+		if (currentLevel > sequence.length) return false;
+		if (node.value !== sequence[currentLevel]) return false;
+		
+		currentLevel += 1;
+		if (dfs(node.left, currentLevel) || dfs(node.right, currentLevel)) {
+			return true;
+        }
+        if (currentLevel === sequence.length) return true
+        return false;
+    }
+    return dfs(root, 0);
+};
+
+Time complexity: O(N) where N is the all node in binary tree
+Space complexity: O(N) where N is the recursion stack from calling dfs
+
+sequence = [1,1,6]
+node = 1, currentLevel = 0
+	node = 1, currentLevel = 1
+	node = 0, currentLevel = 1
+	node = 1, currentLevel = 1
+	node = 1, currentLevel = 2
+	node = 6, currentLevel = 2
+	node = 6, currentLevel = 3
+		node = null, currentLevel = 3
+		node = null, currentLevel = 3
+	node = 6, currentLevel = 2 // return true
+
