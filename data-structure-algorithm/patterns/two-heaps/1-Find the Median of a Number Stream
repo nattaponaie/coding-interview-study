@@ -1,0 +1,147 @@
+Problem Statement#
+Design a class to calculate the median of a number stream. The class should have the following two methods:
+
+insertNum(int num): stores the number in the class
+findMedian(): returns the median of all numbers inserted in the class
+If the count of numbers inserted in the class is even, the median will be the average of the middle two numbers.
+
+Example 1:
+
+1. insertNum(3)
+2. insertNum(1)
+3. findMedian() -> output: 2
+4. insertNum(5)
+5. findMedian() -> output: 3
+6. insertNum(4)
+7. findMedian() -> output: 3.5
+
+
+
+class MedianOfAStream {
+	constructor() {
+        this.maxHeap = [];
+        this.minHeap = [];
+    }
+
+ 	insert_num(num) {
+		if (this.maxHeap.length < 1) {
+            this.insertToMaxHeap(num);
+            return;
+        }
+
+        if (num > this.maxHeap[0]) {
+            this.insertToMinHeap(num);
+        } else {
+            this.insertToMaxHeap(num);
+        }
+
+        if (this.minHeap.length > this.maxHeap.length) {
+            const value = this.removeMinHeap();
+            this.insertToMaxHeap(value);
+        }
+
+        if (this.minHeap.length === 0 && this.maxHeap.length > 1) {
+            const value = this.removeMaxHeap();
+            this.insertToMinHeap(value);
+        }
+    }
+    find_median(self) {
+        if (this.maxHeap.length === this.minHeap.length) {
+            const minValue = this.maxHeap[0]
+            const largeValue = this.minHeap[0]
+
+            return (minValue + largeValue) / 2;
+        }
+        return this.maxHeap[0];
+    }
+
+    insertToMaxHeap(num) {
+        this.maxHeap.push(num);
+        if (this.maxHeap.length > 1) this.siftUpMaxHeap(this.maxHeap.length - 1);
+    }
+
+    insertToMinHeap(num) {
+        this.minHeap.push(num);
+        if (this.minHeap.length > 1) this.siftUpMinHeap(this.minHeap.length - 1);
+    }
+
+    siftUpMinHeap(currentIdx) {
+        while (currentIdx >= 0) {
+            const parentIdx = Math.floor((currentIdx-1)/2);
+            if (parentIdx < 0) return;
+            if (this.minHeap[currentIdx] >= this.minHeap[parentIdx]) return;
+
+            [this.minHeap[currentIdx], this.minHeap[parentIdx]] = [this.minHeap[parentIdx], this.minHeap[currentIdx]];
+            currentIdx = parentIdx;
+        }
+    }
+
+    siftUpMaxHeap(currentIdx) {
+        while (currentIdx >= 0) {
+            const parentIdx = Math.floor((currentIdx-1)/2);
+            if (parentIdx < 0) return;
+            if (this.maxHeap[currentIdx] <= this.maxHeap[parentIdx]) return;
+
+            [this.maxHeap[currentIdx], this.maxHeap[parentIdx]] = [this.maxHeap[parentIdx], this.maxHeap[currentIdx]];
+            currentIdx = parentIdx;
+        }
+    }
+
+    siftDownMaxHeap(currentIdx) {
+        let childOneIdx = 2*currentIdx + 1;
+        while (childOneIdx < this.maxHeap.length - 1) {
+            const childOneValue = childOneIdx <= this.maxHeap.length - 1 ? array[childOneIdx] : -1;
+            const childTwoIdx = 2*currentIdx + 2;
+            const childTwoValue = childTwoIdx <= this.maxHeap.length - 1 ? array[childTwoIdx] : -1;
+
+            let idxToSwap = childOneIdx
+            if (childTwoValue !== -1 && childTwoValue > childOneValue) {
+                idxToSwap = childTwoIdx;
+            }
+
+            if (this.maxHeap[currentIdx] < this.maxHeap[idxToSwap]) {
+                [this.maxHeap[currentIdx], this.maxHeap[idxToSwap]] = [this.maxHeap[idxToSwap], this.maxHeap[currentIdx]];
+                currentIdx = idxToSwap;
+                childOneIdx = 2*currentIdx + 1;
+            }
+        }
+    }
+
+    siftDownMinHeap(currentIdx) {
+        let childOneIdx = 2*currentIdx + 1;
+        while (childOneIdx < this.minHeap.length - 1) {
+            const childOneValue = childOneIdx <= this.minHeap.length - 1 ? this.minHeap[childOneIdx] : -1;
+            const childTwoIdx = 2*currentIdx + 2;
+            const childTwoValue = childTwoIdx <= this.minHeap.length - 1 ? this.minHeap[childTwoIdx] : -1;
+
+            let idxToSwap = childOneIdx
+            if (childTwoValue !== -1 && childTwoValue > childOneValue) {
+                idxToSwap = childTwoIdx;
+            }
+
+            if (this.minHeap[currentIdx] > this.minHeap[idxToSwap]) {
+                [this.minHeap[currentIdx], this.minHeap[idxToSwap]] = [this.minHeap[idxToSwap], this.minHeap[currentIdx]];
+                currentIdx = idxToSwap;
+                childOneIdx = 2*currentIdx + 1;
+            }
+        }
+    }
+
+    removeMaxHeap() {
+        const lastIdx = this.maxHeap.length - 1;
+        [this.maxHeap[0], this.maxHeap[lastIdx]] = [this.maxHeap[lastIdx], this.maxHeap[0]];
+        const removeValue = this.maxHeap.pop();
+        this.siftDownMaxHeap(0);
+        return removeValue;
+    }
+
+    removeMinHeap() {
+        const lastIdx = this.minHeap.length - 1;
+        [this.minHeap[0], this.minHeap[lastIdx]] = [this.minHeap[lastIdx], this.minHeap[0]];
+        const removeValue = this.minHeap.pop();
+        this.siftDownMinHeap(0);
+        return removeValue;
+    }
+};
+
+
