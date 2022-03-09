@@ -1,0 +1,100 @@
+Input [
+  48,  12, 24,  7, 8, -5,
+  24, 391, 24, 56, 2,  6,
+   8,  41
+]
+
+Output [
+  -5,   2,  6,  7,  8,  8,
+  24, 391, 24, 56, 12, 24,
+  48,  41
+]
+
+
+// Do not edit the class below except for the buildHeap,
+// siftDown, siftUp, peek, remove, and insert methods.
+// Feel free to add new properties and methods to the class.
+class MinHeap {
+  constructor(array) {
+    this.heap = this.buildHeap(array);
+  }
+
+	// O(N) time: as we need to visit every node in heap to compare value
+	// O(1) space: in place memory
+  buildHeap(array) {
+    // Write your code here.
+		console.log(array)
+		const firstParentIdx = Math.floor((array.length - 2) / 2);
+		for (let i = firstParentIdx; i >= 0; i--) {
+			this.siftDown(i, array);
+		}
+		console.log(array)
+		return array;
+  }
+
+	// O(log(N)) time: visit only target idx and traverse down to its child only
+	// O(1) space: in place memory
+  siftDown(idx, array) {
+    let childOneIdx = (2*idx) + 1;
+		while (childOneIdx <= array.length - 1) {
+			const childOneValue = childOneIdx <= array.length - 1 ? array[childOneIdx] : -1;
+		
+			const childTwoIdx = (2*idx) + 2;
+			const childTwoValue = childTwoIdx <= array.length - 1 ? array[childTwoIdx] : -1;
+
+			const currentParentValue = array[idx];
+
+			let idxToSwap;
+			if (childTwoValue !== -1 && childTwoValue < childOneValue) idxToSwap = childTwoIdx;
+			else idxToSwap = childOneIdx;
+
+			if (array[idxToSwap] < currentParentValue) {
+				[array[idx], array[idxToSwap]] = [array[idxToSwap], array[idx]];
+				idx = idxToSwap
+				childOneIdx = (2*idx) + 1;
+			} else {
+				return;
+			}
+		}
+  }
+
+	// O(log(N)) time: as we only need to visit target index and traverse up to its parent
+	// O(1) space
+  siftUp(currentIdx) {
+    // Write your code here.
+		while (currentIdx >= 0) {
+			const parentIdx = Math.floor((currentIdx-1) / 2);
+			const parentValue = this.heap[parentIdx];
+			const currentValue = this.heap[currentIdx];
+			if (currentValue >= parentValue) return;
+			[this.heap[currentIdx], this.heap[parentIdx]] = [this.heap[parentIdx], this.heap[currentIdx]];
+			currentIdx = parentIdx;
+		}
+  }
+
+	// O(1) time | O(1) space
+  peek() {
+    // Write your code here.
+		return this.heap[0];
+  }
+
+	// O(log(N)) time | O(1) space
+  remove() {
+    // Write your code here.
+		const idxToRemove = this.heap.length - 1;
+		[this.heap[0], this.heap[idxToRemove]] = [this.heap[idxToRemove], this.heap[0]];
+		const removedValue = this.heap.pop();
+		this.siftDown(0, this.heap);
+		return removedValue;
+  }
+
+	// O(log(N)) time | O(1) space
+  insert(value) {
+    // Write your code here.
+		this.heap.push(value);
+		this.siftUp(this.heap.length - 1)
+  }
+}
+
+// Do not edit the line below.
+exports.MinHeap = MinHeap;
