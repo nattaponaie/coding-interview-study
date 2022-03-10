@@ -1,0 +1,45 @@
+Problem Statement#
+Given a set of numbers that might contain duplicates, find all of its distinct subsets.
+
+Example 1:
+Input: [1, 3, 3]
+Output: [], [1], [3], [1,3], [3,3], [1,3,3]
+
+Example 2:
+Input: [1, 5, 3, 3]
+Output: [], [1], [5], [3], [1,5], [1,3], [5,3], [1,5,3], [3,3], [1,3,3], [3,3,5], [1,5,3,3] 
+
+
+const find_subsets = function(nums) {
+    subsets = [];
+    subsets.push([]);
+
+    nums.sort((a,b) => a - b);
+
+    for (let i = 0; i < nums.length; i++) {
+        let subSetStartingIdx = 0;
+        const currentNum = nums[i];
+        if (i > 0 && currentNum === nums[i-1]) {
+            subSetStartingIdx = i;
+        }
+
+        subSetLength = subsets.length;
+        for (let j = subSetStartingIdx; j < subSetLength; j++) {
+            const set1 = subsets[j].slice();
+            set1.push(currentNum);
+            subsets.push(set1);
+        } 
+    }
+
+    return subsets;
+};
+
+Time complexity#
+Since, in each step, the number of subsets doubles (if not duplicate) as we add each element to all the existing subsets, 
+therefore, we will have a total of O(2^N) subsets, where ‘N’ is the total number of elements in the input set. 
+And since we construct a new subset from an existing set, therefore, the time complexity of the above algorithm will be O(N*2^N)
+
+Space complexity#
+All the additional space used by our algorithm is for the output list. Since, at most, we will have a total of O(2^N) subsets, 
+and each subset can take up to O(N) space, therefore, the space complexity of our algorithm will be O(N*2^N).
+
