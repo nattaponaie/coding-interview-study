@@ -1,0 +1,81 @@
+Problem Statement#
+Given a string, find all of its permutations preserving the character sequence but changing case.
+
+Example 1:
+Input: "ad52"
+Output: "ad52", "Ad52", "aD52", "AD52" 
+
+Example 2:
+Input: "ab7c"
+Output: "ab7c", "Ab7c", "aB7c", "AB7c", "ab7C", "Ab7C", "aB7C", "AB7C"
+
+[a, A]
+[ab, aB, Ab, AB]
+[ab7, aB7, Ab7, AB7]
+[ab7c, ab7C, aB7c, aB7C, Ab7c, Ab7C, AB7c, AB7C]
+
+#1 Approach
+const find_letter_case_string_permutations = function(str) {
+  permutations = [str.charAt(0), str.charAt(0).toUpperCase()]; // [a,A]
+
+  for (let i = 1; i < str.length; i++) {
+    const currentChar = str.charAt(i); // b | 7
+    const currentPermLength = permutations.length; // 2 | 4
+    const newPermutations = [];
+    for (let j = 0; j < currentPermLength; j++) {
+      const currentPerm = permutations.shift(); // a,A | ab,aB,Ab,AB
+      if (Number.isInteger(parseInt(currentChar))) {
+        let clone = `${currentPerm}${currentChar}` // ab7
+        newPermutations.push(clone); // [ab7,aB7,Ab7,AB7]
+      }
+      else {
+        let clone = `${currentPerm}${currentChar}`
+        newPermutations.push(clone);
+
+        clone = `${currentPerm}${currentChar.toUpperCase()}`
+        newPermutations.push(clone);
+      }
+    }
+    permutations.push(...newPermutations); // [ab,aB,Ab,AB]
+  }
+
+  return permutations;
+};
+
+#2 Approach
+
+const find_letter_case_string_permutations = function(str) {
+	const permutations = [str]; // [ad52]
+
+	for (i = 0; i < str.length; i++) {
+		const currentChar = str[i]; // a
+		if (Number.isInteger(parseInt(currentChar))) continue;
+		const clonePermutations = [...permutations]; // [ad52]
+		const currentPermLength = permutations.length; // 1
+
+		const newPermutations = [...clonePermutations]; // [ad52]
+
+		for (let j = 0; j < currentPermLength; j++) {
+			const currentPerm = permutations.shift(); // ad52
+			const currentPermToArr = [...currentPerm]; // [ad52]
+      if (currentPermToArr[i] === currentChar.toUpperCase()) 
+        currentPermToArr[i] = currentChar.toLowerCase();
+      else
+        currentPermToArr[i] = currentChar.toUpperCase();
+
+			newPermutations.push(currentPermToArr.join('')); // [ad52,Ad52]
+    }
+    permutations.push(...newPermutations); // [ad52,Ad52]
+  }
+  return permutations;
+}
+
+
+Time complexity#
+Since we can have 2^N permutations at the most and while processing each permutation we convert it into a character array, 
+the overall time complexity of the algorithm will be O(N*2^N).
+
+Space complexity#
+All the additional space used by our algorithm is for the output list. Since we can have a total of O(2^N)
+permutations, the space complexity of our algorithm is O(N*2^N).
+
