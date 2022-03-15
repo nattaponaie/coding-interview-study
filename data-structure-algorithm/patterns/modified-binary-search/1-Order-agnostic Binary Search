@@ -1,0 +1,44 @@
+Problem Statement #
+Given a sorted array of numbers, find if a given number ‘key’ is present in the array. Though we know that the array is sorted, we don’t know if it’s sorted in ascending or descending order. You should assume that the array can have duplicates.
+
+Write a function to return the index of the ‘key’ if it is present in the array, otherwise return -1.
+
+Example 1:
+Input: [4, 6, 10], key = 10
+Output: 2
+
+Example 2:
+Input: [1, 2, 3, 4, 5, 6, 7], key = 5
+Output: 4
+
+const binary_search = function(arr, key) {
+	if (arr.length < 1) return -1;
+    let start = 0;
+    let end = arr.length - 1;
+
+    const isAscending = arr[start] <= arr[end];
+
+    while (start <= end) {
+        const middleIdx = (start + end) / 2;
+        const middleNum = arr[middleIdx];
+        if (middleNum === key) return middleIdx;
+
+        if (isAscending) {
+            if (middleNum < key) start = middleIdx + 1;
+            else end = middleIdx - 1;
+        } else {
+            if (middleNum < key) end = middleIdx - 1;
+                else start = middleIdx + 1;
+        }
+    }
+
+    return -1;
+};
+
+#1 start = 0, end = 2, middleIdx = 1, middleNum = 6
+#1 start = 2, end = 2, middleIdx = 1, middleNum = 6
+#2 start = 2, end = 2, middleIdx = 2, middleNum = 10
+
+
+Time complexity: This is because every iteration we reduce the array size to half. So, the time complexity for this algorithm will be O(logN) where N is the total number of array
+Space complexity: O(1)
