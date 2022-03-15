@@ -1,0 +1,74 @@
+Problem Statement#
+Given an array of numbers sorted in an ascending order, find the ceiling of a given number ‘key’. The ceiling of the ‘key’ will be the smallest element in the given array greater than or equal to the ‘key’.
+
+Write a function to return the index of the ceiling of the ‘key’. If there isn’t any ceiling return -1.
+
+Example 1:
+Input: [4, 6, 10], key = 6
+Output: 1
+Explanation: The smallest number greater than or equal to '6' is '6' having index '1'.
+
+Example 2:
+Input: [1, 3, 8, 10, 15], key = 12
+Output: 4
+Explanation: The smallest number greater than or equal to '12' is '15' having index '4'.
+
+Example 3:
+Input: [4, 6, 10], key = 17
+Output: -1
+Explanation: There is no number greater than or equal to '17' in the given array.
+
+Example 4:
+Input: [4, 6, 10], key = -1
+Output: 0
+Explanation: The smallest number greater than or equal to '-1' is '4' having index '0'.
+
+Example 5:
+Input: [1, 3, 8, 10, 13, 15], key = 11
+
+Input: [4, 6, 10], key = -1
+Output: 0
+Explanation: The smallest number greater than or equal to '-1' is '4' having index '0'.
+
+
+const search_ceiling_of_a_number = function(arr, key) {
+    let start = 0;
+    let end = arr.length - 1;
+    let lastMiddleIdx = -1;
+    let ceilingNum = 0;
+
+    while (start <= end) {
+        const middleIdx = Math.floor((start+end) / 2);
+        const middleNum = arr[middleIdx];
+        if (middleNum === key) return middleIdx;
+
+        if (middleNum < key) {
+            start = middleIdx + 1;
+        } else {
+            lastMiddleIdx = middleIdx;
+            end = middleIdx - 1;
+        }
+    }
+
+    return lastMiddleIdx;
+};
+
+Input: [1, 3, 8, 10, 15], key = 12
+#1 start = 0, end = 4, lastMiddleIdx = -1, middleIdx = 2
+#1 start = 3, end = 4, lastMiddleIdx = -1, middleIdx = 2
+#2 start = 3, end = 4, lastMiddleIdx = -1, middleIdx = 3
+#2 start = 4, end = 4, lastMiddleIdx = -1, middleIdx = 3
+#3 start = 4, end = 4, lastMiddleIdx = -1, middleIdx = 4
+#3 start = 4, end = 4, lastMiddleIdx = 4, middleIdx = 4
+#3 start = 4, end = 3, lastMiddleIdx = 4, middleIdx = 4 // return 4
+
+Input: [4, 6, 10], key = -1
+Output: 0
+#1 start = 0, end = 2, lastMiddleIdx = -1, middleIdx = 1
+#1 start = 0, end = 0, lastMiddleIdx = 1, middleIdx = 1
+#2 start = 0, end = 0, lastMiddleIdx = 1, middleIdx = 1
+
+Time complexity: This is because every iteration we reduce the array size to half. 
+So, the time complexity for this algorithm will be O(logN) where N is the total number of array
+
+Space complexity: O(1)
