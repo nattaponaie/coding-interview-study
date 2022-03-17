@@ -1,0 +1,107 @@
+Problem Statement#
+Given an array of numbers sorted in ascending order, find the element in the array that has the minimum difference with the given ‘key’.
+
+Example 1:
+Input: [4, 6, 10], key = 7
+Output: 6
+Explanation: The difference between the key '7' and '6' is minimum than any other number in the array 
+
+Example 2:
+Input: [4, 6, 10], key = 4
+Output: 4
+
+Example 3:
+Input: [1, 3, 8, 10, 15], key = 12
+Output: 10
+
+Example 4:
+Input: [4, 6, 10], key = 17
+Output: 10
+
+#1 Approach
+
+const search_min_diff_element = function(arr, key) {
+    let start = 0;
+    let end = arr.length - 1;
+    let minimumDiff = Infinity;
+    let latestMinimumNumberIdx = -1;
+
+    if (key < arr[start]) {
+        return arr[start];
+    }
+    if (key > arr[end]) {
+        return arr[end];
+    }
+
+
+    while (start <= end) {
+        const middleIdx = Math.floor(start + (end-start) / 2);
+        const middleNum = arr[middleIdx];
+
+        if (middleNum === key) {
+            latestMinimumNumberIdx = middleIdx;
+            break;
+        }
+        else {
+            const currentDiff = Math.abs(key - middleNum);
+            if (currentDiff < minimumDiff) {
+                minimumDiff = currentDiff;
+                latestMinimumNumberIdx = middleIdx;
+            }
+
+            if(middleNum < key) start = middleIdx + 1;
+            else end = middleIdx - 1;
+        }
+    }
+
+    return arr[latestMinimumNumberIdx];
+};
+
+Input: [4, 6, 10], key = 7
+Output: 6
+#1 start = 0, end = 1, middleIdx = 0, middleNum = 4, minimumDiff = infinite, latestMinimumNumberIdx = -1
+	#1 start = 0, end = 1, middleIdx = 0, middleNum = 4, currentDiff = 3
+	#1 start = 0, end = 1, middleIdx = 0, middleNum = 4, currentDiff = 3, minimumDiff = 3, latestMinimumNumberIdx = 0
+	#1 start = 1, end = 1, middleIdx = 0, middleNum = 4, currentDiff = 3, minimumDiff = 3, latestMinimumNumberIdx = 0
+#2 start = 1, end = 1, middleIdx = 1, middleNum = 6, currentDiff = 3, minimumDiff = 3, latestMinimumNumberIdx = 0
+	#2 start = 1, end = 1, middleIdx = 1, middleNum = 6, currentDiff = 1, minimumDiff = 3, latestMinimumNumberIdx = 0
+	#2 start = 1, end = 1, middleIdx = 1, middleNum = 6, currentDiff = 1, minimumDiff = 1, latestMinimumNumberIdx = 1
+	#2 start = 2, end = 1, middleIdx = 1, middleNum = 6, currentDiff = 1, minimumDiff = 1, latestMinimumNumberIdx = 1
+
+
+Time complexity: As we reduce array size by half for every iteration. So, this algorithm will take O(logN).
+Space complexity: O(1) constant time
+
+
+#2 Approach
+function search_min_diff_element(arr, key) {
+  if (key < arr[0]) {
+    return arr[0];
+  }
+  const n = arr.length;
+  if (key > arr[n - 1]) {
+    return arr[n - 1];
+  }
+
+  let start = 0;
+  let end = n - 1;
+  while (start <= end) {
+    mid = Math.floor(start + (end - start) / 2);
+    if (key < arr[mid]) {
+      end = mid - 1;
+    } else if (key > arr[mid]) {
+      start = mid + 1;
+    } else {
+      return arr[mid];
+    }
+  }
+
+  // at the end of the while loop, 'start === end+1'
+  // we are not able to find the element in the given array
+  // return the element which is closest to the 'key'
+  if ((arr[start] - key) < (key - arr[end])) {
+    return arr[start];
+  }
+
+  return arr[end];
+}
