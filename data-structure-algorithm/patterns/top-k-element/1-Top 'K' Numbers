@@ -1,0 +1,62 @@
+Problem Statement#
+Given an unsorted array of numbers, find the ‘K’ largest numbers in it.
+
+Note: For a detailed discussion about different approaches to solve this problem, take a look at Kth Smallest Number.
+
+Example 1:
+Input: [3, 1, 5, 12, 2, 11], K = 3
+Output: [5, 12, 11]
+
+Example 2:
+Input: [5, 12, 11, -1, 12], K = 3
+Output: [12, 11, 12]
+
+
+const Heap = require('./collections/heap');
+
+const find_k_largest_numbers = function(nums, k) {
+	const minHeap = new Heap([], null, ((a,b) => b-a));
+
+    for (let i = 0; i < nums.length; i++) {
+        const num = nums[i];
+        if (minHeap.length < k) {
+            minHeap.push(num);
+            continue;
+        }
+
+        const smallestNum = minHeap.peak();
+        if (num > smallestNum) {
+            minHeap.pop();
+            minHeap.push(num);
+        }
+    }
+
+    return minHeap;
+};
+
+
+Time complexity: As we iterated through N numbers, we only inserted a number to Heap in 2 situations. The first one is when Heap size is less than K. The second situation is when the Heap size is more than K and its smallest number less than the current number of each iteration. Therefore, this algorithm will take O(N * log K)
+Space complexity: As we only stored K numbers in Heap, so the space that we used will be O(K)
+
+
+
+
+
+Example 1:
+Input: [3, 1, 5, 12, 2, 11], K = 3
+Output: [5, 12, 11]
+
+#1 minHeap = [], i = 0, num = 3
+	#1 minHeap = [3], i = 0, num = 3
+#2 minHeap = [3], i = 1, num = 1
+	#2 minHeap = [3,1], i = 1, num = 1
+#3 minHeap = [3,1], i = 2, num = 5
+	#3 minHeap = [3,1,5], i = 2, num = 5
+#4 minHeap = [3,1,5], i = 3, num = 12
+	#4 minHeap = [3,5], i = 3, num = 12
+	#4 minHeap = [3,5,12], i = 3, num = 12
+#5 minHeap = [3,5,12], i = 4, num = 2
+	#5 minHeap = [3,5,12], i = 4, num = 2
+#6 minHeap = [3,5,12], i = 5, num = 11
+	#6 minHeap = [5,12], i = 5, num = 11
+	#6 minHeap = [5,12,11], i = 5, num = 11
