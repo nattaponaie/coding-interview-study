@@ -1,0 +1,64 @@
+Problem Statement#
+Given an unsorted array of numbers, find Kth smallest number in it.
+
+Please note that it is the Kth smallest number in the sorted order, not the Kth distinct element.
+
+Note: For a detailed discussion about different approaches to solve this problem, take a look at Kth Smallest Number.
+
+Example 1:
+
+Input: [1, 5, 12, 2, 11, 5], K = 3
+Output: 5
+Explanation: The 3rd smallest number is '5', as the first two smaller numbers are [1, 2].
+
+Example 2:
+Input: [1, 5, 12, 2, 11, 5], K = 4
+Output: 5
+Explanation: The 4th smallest number is '5', as the first three small numbers are [1, 2, 5].
+
+Example 3:
+Input: [5, 12, 11, -1, 12], K = 3
+Output: 11
+Explanation: The 3rd smallest number is '11', as the first two small numbers are [5, -1].
+
+
+const find_Kth_smallest_number = function(nums, k) {
+    const maxHeap = new Heap([], null, (a,b) => (a-b));
+
+    for (let i = 0; i < nums.length; i++) {
+        const currentNum = nums[i];
+        if (maxHeap.length < k) {
+            maxHeap.push(currentNum);
+            continue;
+        }
+
+        const largestNum = maxHeap.peek();
+        if (currentNum < largestNum) {
+            maxHeap.pop();
+            maxHeap.push(currentNum);
+        }
+    }
+
+    return maxHeap.peek();
+};
+
+Time complexity: As we iterated through N numbers, we only inserted a number to Heap in 2 situations. 
+The first one is when Heap size is less than K. 
+The second situation is when the Heap size is more than K and its smallest number less than the current number of each iteration. 
+Therefore, this algorithm will take O(N * log K)
+
+Space complexity: As we only stored K numbers in Heap, so the space that we used will be O(K)
+
+Input: [1, 5, 12, 2, 11, 5], K = 3
+Output: 5
+
+#1 i = 0, currentNum = 1, maxHeap = []
+	#1 i = 0, currentNum = 1, maxHeap = [1]
+#2 i = 1, currentNum = 5, maxHeap = [1,5]
+#3 i = 2, currentNum = 12, maxHeap = [1,5,12]
+#4 i = 3, currentNum = 2, maxHeap = [1,5,12]
+	#4 i = 3, currentNum = 2, maxHeap = [1,5,12]
+	#4 i = 3, currentNum = 2, maxHeap = [1,5]
+	#4 i = 3, currentNum = 2, maxHeap = [1,5,2]
+#5 i = 4, currentNum = 11, maxHeap = [1,5,2]
+#6 i = 5, currentNum = 5, maxHeap = [1,5,2]
