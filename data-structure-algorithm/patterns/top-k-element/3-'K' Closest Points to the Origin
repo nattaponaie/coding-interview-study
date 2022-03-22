@@ -30,7 +30,7 @@ class Point {
     }
 
     calculateDistance() {
-        return (this.x * this.x) + (this.y * this.y);
+        return Math.sqrt((this.x * this.x) + (this.y * this.y));
     }
 
     get_point() {
