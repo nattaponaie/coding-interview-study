@@ -1,0 +1,82 @@
+Problem Statement#
+Given a string, sort it based on the decreasing frequency of its characters.
+
+Example 1:
+Input: "Programming"
+Output: "rrggmmPiano"
+Explanation: 'r', 'g', and 'm' appeared twice, so they need to appear before any other character.
+
+Example 2:
+Input: "abcbab"
+Output: "bbbaac"
+Explanation: 'b' appeared three times, 'a' appeared twice, and 'c' appeared only once.
+
+class CharacterFrequency {
+	constructor(character, frequency) {
+		this.character = character;
+		this.frequency = frequency;
+    }
+}
+
+const constructSentence = (frequency, character) => {
+	let sentence = '';
+	for (let i = 1; i <= frequency; i++) {
+		sentence += character;
+    }
+    return sentence;
+}
+
+const sort_character_by_frequency = function(str) {
+    const characterFrequencyHashmap = {};
+
+    for (let i = 0; i < str.length; i++) {
+        const currentCharacter = str[i];
+        if (currentCharacter in characterFrequencyHashmap) {
+            characterFrequencyHashmap[currentCharacter] += 1;
+        } else {
+            characterFrequencyHashmap[currentCharacter] = 1;
+        }
+    }
+
+    const maxHeap = new Heap([], null, (a,b) => a.frequency - b.frequency);
+    for ([key, value] of Object.entries(characterFrequencyHashmap)) {
+        maxHeap.push(new CharacterFrequency(key, value));
+    }
+
+    let result = '';
+
+    while (maxHeap.length > 0) {
+        const element = maxHeap.pop();
+        result += constructSentence(element.frequency, element.character);
+    }
+
+    return result;
+};
+
+
+Input: "abcbab"
+Output: "bbbaac"
+
+characterFrequencyHashmap = {a:2,b:3,c:1}
+
+#1 maxHeap = []
+	#1 maxHeap = [{a:2}]
+# maxHeap = [{a:2},{b:3},{c:1}]
+
+#1 result = “”, maxHeap = [{a:2},{b:3},{c:1}]
+	#1 result = “bbb”, maxHeap = [{a:2},{c:1}]
+#2 result = “bbb”, maxHeap = [{a:2},{c:1}]
+	#2 result = “bbbaa”, maxHeap = [{c:1}]
+#3 result = “bbbaa”, maxHeap = [{c:1}]
+	#3 result = “bbbaac”, maxHeap = []
+
+Time complexity#
+The time complexity of the above algorithm is O(D*logD)
+where ‘D’ is the number of distinct characters in the input string. 
+This means, in the worst case, when all characters are unique the time complexity of the algorithm will be O(N*logN)
+where ‘N’ is the total number of characters in the string.
+
+Space complexity#
+The space complexity will be O(N)
+as in the worst case, we need to store all the ‘N’ characters in the HashMap.
+
