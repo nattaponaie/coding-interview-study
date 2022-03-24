@@ -66,3 +66,63 @@ maxHeap = [5,6,7]
 	#2 i = 4, maxHeap = [6,7,8,9]
 	#2 i = 4, maxHeap = [6,7,8]
 #3 i = 5, maxHeap = [6,7,8]
+
+
+
+Example 1:
+Input: [5, 6, 7, 8, 9], K = 3, X = 7
+Output: [6, 7, 8]
+
+#2 Approach
+
+const getIndex = (arr, targetNum) => {
+    let start = 0;
+    let end = arr.length - 1;
+
+    while(start <= end) {
+        const middleIndex = Math.floor(start + (end-start) / 2);
+        const middleNum = arr[middleIndex];
+        if (middleNum === targetNum) return middleIndex;
+        else if (middleNum < targetNum) start = middleIndex + 1;
+        else end = middleIndex - 1;
+    }
+
+    if (start > 0) start -= 1;
+    return start;
+}
+
+class ClosestNumber {
+	constructor(num, distance) {
+		this.num = num;
+		this.distance = distance;
+    }
+}
+
+const find_closest_elements = function(arr, K, X) {
+    const targetIndex = getIndex(arr, X);
+    let start = Math.max(targetIndex - K, 0);
+    let end = Math.min(targetIndex + K, arr.length - 1);
+
+    const minHeap = new Heap([], null, (a,b) => b.distance - a.distance);
+    for (let i = start; i <= end; i++) {
+        const num = arr[i];
+        minHeap.push(new ClosestNumber(num, Math.abs(num - X)));
+    }
+
+    const result = [];
+    for (let i = 0; i < K; i++) {
+        result.push(minHeap.pop().distance);
+    }
+
+    result.sort((a,b) => a-b);
+    return result;
+}
+
+Time complexity: Firstly, we do binary search to find the length of distance of X which will take O(logN).
+Secondly, we iterate through the distance length of X and insert its number to the heap which will take O(K * logK)
+Thirdly, we iterate through K size of loop to pop min value out from Heap which will take O(K * logK)
+Lastly, we need to sort the result in ascending order of K length. This will take O(K * logK)
+Therefore, this algorithm will take O(K * logK) time.
+
+Space complexity: We store K number to the heap and also sort the result of K number
+So, it will be O(K) space.
