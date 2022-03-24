@@ -1,0 +1,95 @@
+Problem Statement#
+Design a class to efficiently find the Kth largest element in a stream of numbers.
+
+The class should have the following two things:
+
+The constructor of the class should accept an integer array containing initial numbers from the stream and an integer ‘K’.
+The class should expose a function add(int num) which will store the given number and return the Kth largest number.
+
+Example 1:
+Input: [3, 1, 5, 12, 2, 11], K = 4
+1. Calling add(6) should return '5'.
+2. Calling add(13) should return '6'.
+2. Calling add(4) should still return '6'.
+
+[3, 1, 5, 12, 2, 11] -> 4th largest number = 3
+[3, 1, 5, 12, 2, 11, 6] -> 4th largest number = 5
+[3, 1, 5, 12, 2, 11, 6, 13] -> 4th largest number = 6
+[3, 1, 5, 12, 2, 11, 6, 13, 4] -> 4th largest number = 6
+
+const Heap = require('./collections/heap'); 
+class KthLargestNumberInStream {
+    constructor(nums, k) {
+        this.minHeap = new Heap([], null, (a,b) => b-a);
+        this.k = k;
+
+        this.evaluateHeap(nums);
+    }
+
+    evaluateHeap(nums) {
+        for (let i = 0; i < this.k; i++) {
+            this.minHeap.push(nums[i]);
+        }
+
+        for (let i = this.k; i < nums.length; i++) {
+            this.minHeap.push(nums[i]);
+            if (this.minHeap.length > this.k) this.minHeap.pop();
+        }
+    }
+
+    findKthLargestNumber() {
+        return this.minHeap.peek();
+    }
+
+    add(num) {
+        this.minHeap.push(num);
+        if (this.minHeap.length > this.k) this.minHeap.pop();
+        return this.findKthLargestNumber();
+    }
+};
+
+
+
+kthLargestNumber = new KthLargestNumberInStream([3, 1, 5, 12, 2, 11], 4);
+console.log(`4th largest number is: ${kthLargestNumber.add(6)}`)
+console.log(`4th largest number is: ${kthLargestNumber.add(13)}`)
+console.log(`4th largest number is: ${kthLargestNumber.add(4)}`)
+
+
+Time complexity: When declaring the KthLargestNumberInStream object, it will insert the K number to Heap. This will take O(K * logK).
+After that, we will iterate through the remaining input array starting after K position, 
+add insert each number to Heap and also remove one element from Heap out if it exceeds the K size. This part will take O(N * log K) time. 
+Therefore, the declaration’s time complexity part will be O(N * logK).
+
+Secondly, when we call add function to add a number. This will take O(K) as we only add 1 number to K heap size and remove one number out if it exceeds K size.
+
+Space complexity: This algorithm needs to store Heap as K size. So it will be O(K) space.
+
+
+
+Input: [3, 1, 5, 12, 2, 11], K = 4
+1. Calling add(6) should return '5'.
+2. Calling add(13) should return '6'.
+2. Calling add(4) should still return '6'.
+
+this.nums = [3, 1, 5, 12, 2, 11];
+this.k = 4;
+
+# evaluateHeap
+#1 i = 0, this.minHeap = [3]
+#1 i = 1, this.minHeap = [3,1]
+#1 i = 2, this.minHeap = [3,1,5]
+#1 i = 3, this.minHeap = [3,1,5,12]
+#1 i = 4, this.minHeap = [3,1,5,12]
+
+#1 i = 4, this.minHeap = [3,1,5,12]
+	#1 i = 4, this.minHeap = [3,1,5,12,2]
+	#1 i = 4, this.minHeap = [3,5,12,2]
+#2 i = 5, this.minHeap = [3,5,12,2]
+	#2 i = 5, this.minHeap = [3,5,12,2,11]
+	#2 i = 5, this.minHeap = [3,5,12,11]
+#3 i = 6, this.minHeap = [3,5,12,11]
+
+1. Calling add(6) should return '5'
+this.minHeap = [3,5,12,11,6]
+this.minHeap = [5,12,11,6] // return 5
