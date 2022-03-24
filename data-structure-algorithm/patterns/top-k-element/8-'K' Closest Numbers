@@ -1,0 +1,68 @@
+Problem Statement #
+Given a sorted number array and two integers ‘K’ and ‘X’, find ‘K’ closest numbers to ‘X’ in the array. Return the numbers in the sorted order. ‘X’ is not necessarily present in the array.
+
+Example 1:
+Input: [5, 6, 7, 8, 9], K = 3, X = 7
+Output: [6, 7, 8]
+
+Example 2:
+Input: [2, 4, 5, 6, 9], K = 3, X = 6
+Output: [4, 5, 6]
+
+Example 3:
+Input: [2, 4, 5, 6, 9], K = 3, X = 10
+Output: [5, 6, 9]
+
+class ClosestNumber {
+	constructor(num, distance) {
+		this.num = num;
+		this.distance = distance;
+    }
+}
+
+const addToHeap = (heap, num, X) => {
+	const distance = Math.abs(num - X);
+	heap.push(new ClosestNumber(num, distance));
+}
+
+const find_closest_elements = function(arr, K, X) {
+	const maxHeap = new Heap([], null, (a,b) => a.distance - b.distance);
+	for (let i = 0; i < K; i++) {
+        addToHeap(maxHeap, arr[i], X);
+    }
+
+    for (let i = K; i < arr.length; i++) {
+        addToHeap(maxHeap, arr[i], X);
+        if (maxHeap.length > K) maxHeap.pop();
+    }
+
+    const result = [];
+    for (const heapElement of maxHeap.toArray()) {
+        result.push(heapElement.num);
+    }
+    return result.sort();
+};
+
+Time complexity: At first, we will insert the K number to the heap. This part of algorithm will take O(K * logK).
+Secondly, we iterate through the rest of the array N size and insert it to the Heap. If the heap size exceeds K we also need to remove one element out. This part will be O(N * logK) time.
+
+Space complexity: We store only K size to the heap. So, it will be O(K) space
+
+Example 1:
+Input: [5, 6, 7, 8, 9], K = 3, X = 7
+Output: [6, 7, 8]
+
+maxHeap = []
+#1 i = 0, maxHeap = []
+	#1 i = 0, maxHeap = [5]
+#2 i = 1, maxHeap = [5]
+	#2 i = 1, maxHeap = [5,6]
+maxHeap = [5,6,7]
+
+#1 i = 3, maxHeap = [5,6,7]
+	#1 i = 3, maxHeap = [5,6,7,8]
+	#1 i = 3, maxHeap = [6,7,8]
+#2 i = 4, maxHeap = [6,7,8]
+	#2 i = 4, maxHeap = [6,7,8,9]
+	#2 i = 4, maxHeap = [6,7,8]
+#3 i = 5, maxHeap = [6,7,8]
