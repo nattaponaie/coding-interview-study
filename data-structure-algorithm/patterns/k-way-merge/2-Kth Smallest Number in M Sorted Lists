@@ -1,0 +1,68 @@
+Problem Statement#
+Given ‘M’ sorted arrays, find the K’th smallest number among all the arrays.
+
+Example 1:
+Input: L1=[2, 6, 8], L2=[3, 6, 7], L3=[1, 3, 4], K=5
+Output: 4
+Explanation: The 5th smallest number among all the arrays is 4, this can be verified from 
+the merged list of all the arrays: [1, 2, 3, 3, 4, 6, 6, 7, 8]
+
+Example 2:
+Input: L1=[5, 8, 9], L2=[1, 7], K=3
+Output: 7
+Explanation: The 3rd smallest number among all the arrays is 7.
+
+const Heap = require('./collections/heap');
+class SmallestNumber {
+	constructor(num, numIndex, listNumber) {
+		this.num = num;
+		this.numIndex = numIndex;
+		this.listNumber = listNumber;
+	}
+}
+
+const find_Kth_smallest = function(lists, k) {
+	const minHeap = new Heap([], null, (a,b) => b.num - a.num);
+
+	// O(M * logM)
+	for (let i = 0; i < lists.length; i++) {
+		minHeap.push(new SmallestNumber(lists[i][0], 0, i));
+	}
+
+	const sortedArray = [];
+	// O(K * logM)
+	while (minHeap.length > 0) {
+		const firstSmallestNumber = minHeap.pop();
+		sortedArray.push(firstSmallestNumber.num);
+
+		const nextIndex = firstSmallestNumber.numIndex + 1;
+		const listNumber = firstSmallestNumber.listNumber;
+		if (nextIndex < lists[listNumber].length) {
+			minHeap.push(new SmallestNumber(lists[listNumber][nextIndex], nextIndex, listNumber));
+		}
+		if (sortedArray.length === k) break;
+	}
+
+	return sortedArray.length >= k ? sortedArray[k-1] : -1;
+};
+
+Time complexity: At first part, it will take O(M * logM) time to store M elements from the input array to the Heap. 
+After that, we iterate through the heap only K times and each iteration we remove and add an element to the Heap.
+Therefore, this algorithm will take O(K * logM) time.
+Space complexity: Since we store at most M elements to the heap, it will take O(M) space.
+
+Example 2:
+Input: L1=[5, 8, 9], L2=[1, 7], K=3
+Output: 7
+
+#1 minHeap = [{5,0,0},{1,0,1}]
+
+#1 minHeap = [{5,0,0},{1,0,1}]
+	#1 minHeap = [{5,0,0}], firstSmallestNumber = {1,0,1}, sortedArray = [1]
+	#1 minHeap = [{5,0,0}], firstSmallestNumber = {1,0,1}, sortedArray = [1], nextIndex = 1, listNumber = 1
+	#1 minHeap = [{5,0,0},{7,1,1}], firstSmallestNumber = {1,0,1}, sortedArray = [1], nextIndex = 1, listNumber = 1
+#2 minHeap = [{5,0,0},{7,1,1}], firstSmallestNumber = {1,0,1}, sortedArray = [1], nextIndex = 1, listNumber = 1
+	#2 minHeap = [{7,1,1}], firstSmallestNumber = {5,0,0}, sortedArray = [1,5], nextIndex = 1, listNumber = 0
+	#2 minHeap = [{7,1,1},{8,1,0}], firstSmallestNumber = {5,0,0}, sortedArray = [1,5], nextIndex = 1, listNumber = 0
+#3 minHeap = [{7,1,1},{8,1,0}], firstSmallestNumber = {5,0,0}, sortedArray = [1,5], nextIndex = 1, listNumber = 0
+	#3 minHeap = [{8,1,0}], firstSmallestNumber = {7,1,1}, sortedArray = [1,5,7], nextIndex = 2, listNumber = 1
