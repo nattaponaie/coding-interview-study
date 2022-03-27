@@ -1,0 +1,85 @@
+Problem Statement#
+Given an N * N matrix where each row and column is sorted in ascending order, find the Kth smallest element in the matrix.
+
+Example 1:
+
+Input: Matrix=[
+    [2, 6, 8], 
+    [3, 7, 10],
+    [5, 8, 11]
+  ], 
+  K=5
+Output: 7
+Explanation: The 5th smallest number in the matrix is 7.
+
+class Element {
+	constructor(num, numIndex, rowNumber) {
+		this.num = num;
+		this.numIndex = numIndex;
+		this.rowNumber = rowNumber;
+    }
+}
+
+const find_Kth_smallest = function(matrix, k) {
+	// O(N)
+	const minHeap = new Heap([], null, (a,b) => b.num - a.num);
+
+	// O(min(K,N) * min(K,N))
+	for (let i = 0; i < Math.min(k,matrix.length); i++) {
+		minHeap.push(new Element(matrix[i][0], 0, i));
+    }
+
+    let currentSmallestNum = -1;
+    let kCount = 0;
+    // O(K * logN)
+    while (minHeap.length > 0) {
+        const element = minHeap.pop();
+        currentSmallestNum = element.num;
+        kCount += 1;
+        if (kCount === k) break;
+
+        const rowNumber = element.rowNumber;
+        const numIndex = element.numIndex;
+        const nextIndex = numIndex + 1;
+        if (nextIndex < matrix[rowNumber].length) {
+            minHeap.push(new Element(matrix[rowNumber][nextIndex], nextIndex, rowNumber));
+        }
+    }
+
+    return currentSmallestNum;
+};
+
+Time complexity#
+First, we insert at most ‘K’ or one element from each of the ‘N’ rows, which will take O(min(K, N)). 
+Then we went through at most ‘K’ elements in the matrix and remove/add one element in the heap in each step. 
+As we can’t have more than ‘N’ elements in the heap in any condition, therefore, the overall time complexity of the above algorithm will be O(min(K, N) + K*logN).
+
+Space complexity#
+The space complexity will be O(N)
+because, in the worst case, our min-heap will be storing one number from each of the ‘N’ rows.
+
+
+
+Input: Matrix=[
+    [2, 6, 8], 
+    [3, 7, 10],
+    [5, 8, 11]
+  ], 
+  K=5
+Output: 7
+
+#1 i = 0, minHeap = []
+	#1 i = 0, minHeap = [{2,0,0}]
+#2 i = 1, minHeap = [{2,0,0}]
+	#2 i = 1, minHeap = [{2,0,0},{3,0,1}]
+#3 i = 2, minHeap = [{2,0,0},{3,0,1}]
+	#3 i = 2, minHeap = [{2,0,0},{3,0,1},{5,0,2}]
+—----
+#1 sortedNums = [], minHeap = [{2,0,0},{3,0,1},{5,0,2}]
+	#1 sortedNums = [2], minHeap = [{3,0,1},{5,0,2}], element = {2,0,0}
+	#1 sortedNums = [2], minHeap = [{3,0,1},{5,0,2},{6,1,0}], element = {2,0,0}
+#2 sortedNums = [2], minHeap = [{3,0,1},{5,0,2},{6,1,0}], element = {2,0,0}
+#2 sortedNums = [2,3], minHeap = [{5,0,2},{6,1,0},{7}]
+#2 sortedNums = [2,3,5], minHeap = [{6,1,0},{7},{8}]
+#2 sortedNums = [2,3,5,6], minHeap = [{7},{8},{8}]
+#2 sortedNums = [2,3,5,6,7], minHeap = [{8},{8},{10}]
