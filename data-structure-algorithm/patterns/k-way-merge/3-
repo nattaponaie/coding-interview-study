@@ -24,7 +24,7 @@ const find_Kth_smallest = function(matrix, k) {
 	// O(N)
 	const minHeap = new Heap([], null, (a,b) => b.num - a.num);
 
-	// O(min(K,N) * min(K,N))
+	// O(min(K,N) * log(min(K,N)))
 	for (let i = 0; i < Math.min(k,matrix.length); i++) {
 		minHeap.push(new Element(matrix[i][0], 0, i));
     }
