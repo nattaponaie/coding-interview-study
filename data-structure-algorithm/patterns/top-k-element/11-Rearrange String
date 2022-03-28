@@ -1,0 +1,92 @@
+Problem Statement#
+Given a string, find if its letters can be rearranged in such a way that no two same characters come next to each other.
+
+Example 1:
+Input: "aappp"
+Output: "papap"
+Explanation: In "papap", none of the repeating characters come next to each other.
+
+Example 2:
+Input: "Programming"
+Output: "rgmrgmPiano" or "gmringmrPoa" or "gmrPagimnor", etc.
+Explanation: None of the repeating characters come next to each other.
+
+Example 3:
+Input: "aapa"
+Output: ""
+Explanation: In all arrangements of "aapa", atleast two 'a' will come together e.g., "apaa", "paaa".
+
+p:1,r:2,o:1,g:2,a:1,m:2,i:1,n:1
+
+const Heap = require('./collections/heap');
+
+class Character {
+	constructor(char, frequency) {
+		this.char = char;
+		this.frequency = frequency;
+	}
+}
+
+
+const rearrange_string = function(str) {
+	let output = "";
+
+	const characterHashmap = {};
+	// O(N) time, O(N) space
+	for (let i = 0; i < str.length; i++) {
+		const char = str[i];
+		if (char in characterHashmap) {
+			characterHashmap[char] += 1;
+		} else {
+			characterHashmap[char] = 1;
+		}
+	}
+	
+	const maxHeap = new Heap([], null, (a,b) => a.frequency-b.frequency);
+	// O(N * logN) time, O(N) space
+	for ([key, value] of Object.entries(characterHashmap)) {
+		maxHeap.push(new Character(key, value));
+	}
+	// maxHeap = [{p:1},{a:3}]
+
+	// O(N * logN) time
+	while (maxHeap.length > 0) {
+		let currentChar = maxHeap.pop();
+		const lastCharOfOutput = output[output.length - 1];
+		if (currentChar.char === lastCharOfOutput) {
+			const cloneCurrentChar = new Character(currentChar.char, currentChar.frequency);
+			currentChar = maxHeap.pop();
+			maxHeap.push(new Character(cloneCurrentChar.char, cloneCurrentChar.frequency));
+		}
+
+		if (!currentChar) return ""
+		if (currentChar.char === lastCharOfOutput) return "";
+		output += currentChar.char;
+		if (currentChar.frequency > 1) maxHeap.push(new Character(currentChar.char, currentChar.frequency - 1));
+	}
+
+	return output;
+};
+
+
+
+console.log(`Rearranged string: ${rearrange_string("aappp")}`)
+console.log(`Rearranged string: ${rearrange_string("Programming")}`)
+console.log(`Rearranged string: ${rearrange_string("aapa")}`)
+
+
+
+Input: "aappp"
+Output: "papap"
+
+//1 maxHeap = [{p:3},{a:2}], currentChar = {p:3}, output = “”
+	//1 maxHeap = [{a:2}], currentChar = {p:3}, output = “p”
+	//1 maxHeap = [{a:2},{p:2}], currentChar = {p:3}, output = “p”
+//2 maxHeap = [{a:2},{p:2}], currentChar = {a:2}, output = “p”
+	//2 maxHeap = [{p:2}], currentChar = {a:2}, output = “pa”
+	//2 maxHeap = [{p:2},{a:1}], currentChar = {a:2}, output = “pa”
+//3 maxHeap = [{p:2},{a:1}], currentChar = {p:2}, output = “pa”
+	//3 maxHeap = [{a:1}], currentChar = {p:2}, output = “pap”
+	//3 maxHeap = [{a:1},{p:1}], currentChar = {p:2}, output = “pap”
+
+
