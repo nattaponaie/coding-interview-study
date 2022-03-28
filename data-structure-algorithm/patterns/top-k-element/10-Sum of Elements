@@ -1,0 +1,49 @@
+Problem Statement#
+Given an array, find the sum of all numbers between the K1’th and K2’th smallest elements of that array.
+
+Example 1:
+Input: [1, 3, 12, 5, 15, 11], and K1=3, K2=6
+Output: 23
+Explanation: The 3rd smallest number is 5 and 6th smallest number 15. The sum of numbers coming
+between 5 and 15 is 23 (11+12).
+
+Example 2:
+Input: [3, 5, 8, 7], and K1=1, K2=4
+Output: 12
+Explanation: The sum of the numbers between the 1st smallest number (3) and the 4th smallest 
+number (8) is 12 (5+7).
+
+K1=3, K2=6
+[1,3,5,11,12,15] = 11+12 = 23
+
+K1=1, K2=4
+[3,5,7,8] = 5+7 = 12
+
+const find_sum_of_elements = function(nums, k1, k2) {
+	// O(N * logN) time, O(N) space
+    const minHeap = new Heap(nums, null, (a,b) => b-a);
+
+    let sum = 0;
+    let i = 1;
+    // O(N * logN) time
+    while (minHeap.length > 0) {
+        const num = minHeap.pop();
+        if (i > k1 && i < k2) {
+            sum += num;
+        } else if (i > k2) break
+        i += 1;
+    }
+
+    return sum;
+};
+
+#1 [1,3,5,11,12,15], num = 1, i = 1
+	#1 [3,5,11,12,15], num = 1, i = 1
+#2 [5,11,12,15], num = 3, i = 2
+	#2 [5,11,12,15], num = 3, i = 2
+#3 [11,12,15], num = 5, i = 3
+#4 [12,15], num = 11, i = 4
+	#4 [12,15], num = 11, i = 4, sum = 11
+#5 [15], num = 12, i = 5, sum = 11
+	#5 [15], num = 12, i = 5, sum = 23
+#5 [15], num = 15, i = 6, sum = 23
