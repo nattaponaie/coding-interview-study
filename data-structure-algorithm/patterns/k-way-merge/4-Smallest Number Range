@@ -81,3 +81,11 @@ const find_smallest_range = function(lists) {
     return [rangeStart, rangeEnd];
 };
 
+Time complexity#
+Since, at most, we’ll be going through all the elements of all the arrays and will remove/add one element in the heap in each step, 
+the time complexity of the above algorithm will be O(N*logM)
+where ‘N’ is the total number of elements in all the ‘M’ input arrays.
+
+Space complexity#
+The space complexity will be O(M)
+because, at any time, our min-heap will be store one number from all the ‘M’ input arrays.
