@@ -1,0 +1,83 @@
+Problem Statement#
+Given ‘M’ sorted arrays, find the smallest range that includes at least one number from each of the ‘M’ lists.
+
+Example 1:
+Input: L1=[1, 5, 8], L2=[4, 12], L3=[7, 8, 10]
+Output: [4, 7]
+Explanation: The range [4, 7] includes 5 from L1, 4 from L2 and 7 from L3.
+
+Example 2:
+Input: L1=[1, 9], L2=[4, 12], L3=[7, 10, 16]
+Output: [9, 12]
+Explanation: The range [9, 12] includes 9 from L1, 12 from L2 and 10 from L3.
+
+
+Input: L1=[1i, 5, 8], L2=[4i, 12], L3=[7i, 8, 10]
+currentMaxNumber = 7,12
+rangeStart = 4
+rangeEnd = 7
+range = 3
+
+class Number {
+	constructor(number, numberIndex, listIndex) {
+		this.number = number;
+		this.numberIndex = numberIndex;
+		this.listIndex = listIndex;
+    }
+}
+
+const find_smallest_range = function(lists) {
+
+    const minHeap = new Heap([], null, (a,b) => b.number - a.number);
+    let currentMaxNumber = 0;
+
+    // O(M * logM) time, O(M) space
+    for (let i = 0; i < lists.length; i++) {
+        // 1,4,7
+        const number = lists[i][0];
+        // 1,4,7
+        currentMaxNumber = Math.max(currentMaxNumber, number);
+        // [{1,0,0},{4:0:1},{7,0,2]]
+        minHeap.push(new Number(number, 0, i));
+    }
+
+    let rangeStart = 0;
+    let rangeEnd = Infinity;
+
+    // [{1,0,0},{4:0:1},{7,0,2]]
+    // [{4:0:1},{5,1,0},{7,0,2]]
+    // [{5,1,0},{7,0,2},{12,0,1}]
+
+    // O(N * logM) time
+    while (minHeap.length === lists.length) {
+        // {1,0,0},{4,0,1},{5,1,0}
+        const minNumber = minHeap.pop();
+        // 6,3,7
+        const range = currentMaxNumber - minNumber.number;
+        // Infinity,6
+        const currentRange = rangeEnd - rangeStart;
+        if (range < currentRange) {
+            // 1,4
+            rangeStart = minNumber.number;
+            // 7
+            rangeEnd = currentMaxNumber;
+        }
+
+        // 1,1
+        const nextNumberIndex = minNumber.numberIndex + 1;
+        // [1,5,8], [4,12]
+        const currentList = lists[minNumber.listIndex];
+        if (nextNumberIndex < currentList.length) {
+            // 5,12
+            const nextNumber = currentList[nextNumberIndex];
+            // 7,12
+            currentMaxNumber = Math.max(currentMaxNumber, nextNumber);
+            // [{4:0:1},{5,1,0},{7,0,2]]
+            // [{5,1,0},{7,0,2},{12,0,1}]
+            minHeap.push(new Number(nextNumber, nextNumberIndex, minNumber.listIndex));
+        }
+    }
+
+    return [rangeStart, rangeEnd];
+};
+
