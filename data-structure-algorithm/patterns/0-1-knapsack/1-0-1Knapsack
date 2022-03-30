@@ -8,24 +8,21 @@ let solveKnapsack = function(profits, weights, capacity) {
 	if (profits.length !== weights.length) return 0;
 
 	const recursive = (profits, weights, capacity, currentIndex) => {
-		// 0,1
-		if (currentIndex >= profits.length - 1) return 0;
-		// 7,6
+		if (currentIndex > profits.length - 1) return 0;
 		if (capacity < 1) return 0;
 
-		// 1,2
 		const currentWeight = weights[currentIndex];
-		// 6,4
-		const currentCapacity = capacity-currentWeight;
-		if (currentCapacity < 0) return 0;
-		
-		// 1.6
-		const currentProfit = profits[currentIndex];
-		const profitLeft = currentProfit + recursive(profits,weights, currentCapacity, currentIndex + 1);
-		const profitRight = recursive(profits,weights, capacity, currentIndex + 1);
+    	const currentProfit = profits[currentIndex];
+    	let profitLeft = 0;
+		if (currentWeight <= capacity) {
+			profitLeft = currentProfit + recursive(profits, weights, capacity-currentWeight, currentIndex + 1);
+		}
+		const profitRight = recursive(profits, weights, capacity, currentIndex + 1);
 		return Math.max(profitLeft, profitRight);
-    }
-    return recursive(profits, weights, capacity, 0);
+  	}
+  
+  	const result = recursive(profits, weights, capacity, 0);
+  	return result;
 };
 
 
@@ -54,21 +51,24 @@ let solveKnapsack = function(profits, weights, capacity) {
 	const recursive = (profits, weights, capacity, currentIndex) => {
 		if (currentIndex > profits.length - 1) return 0;
 		if (capacity < 1) return 0;
-		
+
 		maxProfitDp[currentIndex] = maxProfitDp[currentIndex] || [];
 		if (maxProfitDp[currentIndex][capacity] !== undefined) {
 			return maxProfitDp[currentIndex][capacity];
 		}
 
 		const currentWeight = weights[currentIndex];
-		const currentCapacity = capacity-currentWeight;
-		if (currentCapacity < 0) return 0;
+    	const currentProfit = profits[currentIndex];
+    	let profitLeft = 0;
+		if (currentWeight <= capacity) {
+			profitLeft = currentProfit + recursive(profits, weights, capacity-currentWeight, currentIndex + 1);
+		}
+		const profitRight = recursive(profits, weights, capacity, currentIndex + 1);
 		
-		const currentProfit = profits[currentIndex];
-		const profitLeft = currentProfit + recursive(profits,weights, currentCapacity, currentIndex + 1);
-		const profitRight = recursive(profits,weights, capacity, currentIndex + 1);
-		maxProfitDp[currentIndex][capacity] = Math.max(profitLeft, profitRight);
+    	maxProfitDp[currentIndex][capacity] = Math.max(profitLeft, profitRight);
 		return maxProfitDp[currentIndex][capacity];
-	}
-	return recursive(profits, weights, capacity, 0);
+  	}
+  
+  	const result = recursive(profits, weights, capacity, 0);
+  	return result;
 };
