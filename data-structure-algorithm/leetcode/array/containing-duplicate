@@ -1,0 +1,29 @@
+https://leetcode.com/problems/contains-duplicate/
+
+/**
+ * @param {number[]} nums
+ * @return {boolean}
+ */
+var containsDuplicate = function(nums) {
+    const numDict = {};
+    for (let currentIndex = 0; currentIndex < nums.length; currentIndex ++) {
+        const num = nums[currentIndex];
+        if (num in numDict) {
+            numDict[num] += 1;
+        } else {
+            numDict[num] = 1;
+        }
+    }
+    
+    for ([key, value] of Object.entries(numDict)) {
+        if (value > 1) return true;
+    }
+    
+    return false
+};
+
+/*
+    Time complexity: Firstly, we iterate through N number of array to store the frequency in Hashmap. This will take O(N) time.
+    The second loop, we iterate through the Hashmap for M distinct number of the array. This will take O(M)
+    Therefore, it will take O(N + M) which is asymptotically equivalent to O(N)
+*/
