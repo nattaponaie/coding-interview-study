@@ -1,0 +1,45 @@
+Given an integer array nums of unique elements, return all possible subsets (the power set).
+
+The solution set must not contain duplicate subsets. Return the solution in any order.
+
+
+Example 1:
+Input: nums = [1,2,3]
+Output: [[],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]]
+
+Example 2:
+Input: nums = [0]
+Output: [[],[0]]
+ 
+
+Constraints:
+1 <= nums.length <= 10
+-10 <= nums[i] <= 10
+All the numbers of nums are unique.
+
+var subsets = function(nums) {
+	const queue = [[]];
+	for (const num of nums) {
+		const currentSubset = [];
+		while (queue.length > 0) {
+			const subset = queue.shift();
+            currentSubset.push([...subset]);
+
+            subset.push(num);
+            currentSubset.push(subset);
+        }
+        queue.push(...currentSubset);
+    }
+    return queue;
+};
+
+#1 queue = [[]]
+	#1 queue = [], currentSubset = [[]], subset = []
+	#1 queue = [], currentSubset = [[],[1]], subset = [1]
+	#1 queue = [[],[1]], currentSubset = [[],[1]], subset = [1]
+
+
+Time complexity: We iterate through N element of nums array and we have inner loop which we iterate through queue which has 2^N subset of nums array.
+Therefore, this algorithm will take asymptotically equivalent to O(N * 2^N)
+
+Space complexity: Since we need to store every subset each element in nums array, so it will be O(N * 2^N).
