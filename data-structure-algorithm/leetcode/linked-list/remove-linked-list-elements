@@ -1,0 +1,71 @@
+Given the head of a linked list and an integer val, remove all the nodes of the linked list that has Node.val == val, and return the new head.
+
+Example 1:
+Input: head = [1,2,6,3,4,5,6], val = 6
+Output: [1,2,3,4,5]
+
+Example 2:
+Input: head = [], val = 1
+Output: []
+
+Example 3:
+Input: head = [7,7,7,7], val = 7
+Output: []
+
+Constraints:
+The number of nodes in the list is in the range [0, 104].
+1 <= Node.val <= 50
+0 <= val <= 50
+
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val, next) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.next = (next===undefined ? null : next)
+ * }
+ */
+/**
+ * @param {ListNode} head
+ * @param {number} val
+ * @return {ListNode}
+ */
+var removeElements = function(head, val) {
+	if (head.length === 0) return head;
+	let previous = null, current = head;
+	while (current !== null) {
+		if (current.val === val) {
+			if (previous === null) {
+				head = current.next;
+				current = current.next;
+                continue;
+            }
+            previous.next = current.next;
+            current = current.next;
+        } else {
+            previous = current;
+            current = current.next;
+        }
+    }
+    return head;
+};
+
+
+Input: head = [1,2,6,3,4,5,6], val = 6
+Output: [1,2,3,4,5]
+
+# previous = null, current = 1
+	# previous = 1, current = 2
+# previous = 1, current = 2
+	# previous = 2, current = 6
+# previous = 2, current = 6
+	# previous = 2, current = 3, head =  [1,2,3,4,5,6]
+
+Input: head = [7,7,7,7], val = 7
+Output: []
+
+# previous = null, current = 7
+	# previous = null, current = 7
+
+Time complexity: As we need to iterate through every node in the list to delete the node that is equal to val. Therefore, it will be asymptotically equivalent to O(N).
+
+Space complexity: No extra space needed as we inplace delete the matched val. So, it will be O(1)
