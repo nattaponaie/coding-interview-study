@@ -1,0 +1,105 @@
+Palindrome LinkedList (medium)#
+Given the head of a Singly LinkedList, write a method to check if the LinkedList is a palindrome or not.
+
+Your algorithm should use constant space and the input LinkedList should be in the original form once the algorithm is finished. The algorithm should have O(N)
+time complexity where ‘N’ is the number of nodes in the LinkedList.
+
+Example 1:
+Input: 2 -> 4 -> 6 -> 4 -> 2 -> null
+Output: true
+
+Example 2:
+Input: 2 -> 4 -> 6 -> 4 -> 2 -> 2 -> null
+Output: false
+
+Input: 2 -> 4 -> 6 -> 4 -> 2 -> null
+mid = 6
+reverse since mid 2 -> 4 -> 6
+—
+Input: 2 -> 4 -> 4 -> 2 -> null
+mid = 4
+reservse since mid 2 -> 4
+
+first = head
+second = first reversed node
+start iteration
+	if first is not equal to second -> return false
+	if first and second is equal to mid -> break
+
+	first = first.next
+	second = second.next
+
+reverse back to origin input
+
+return true
+	
+
+class Node {
+  constructor(value, next=null){
+    this.val = value;
+    this.next = next;
+  }
+}
+
+
+const is_palindromic_linked_list= function(head) {
+	const findMiddleNode = () => { // O(N) time, O(1) space
+		let slow = head, fast = head;
+		while (fast !== null) {
+			if (fast.next === null) break;
+			slow = slow.next
+			fast = fast.next.next
+        }
+        return slow
+    }
+
+    const middleNode = findMiddleNode();
+
+    const reverse = (headNode) => { // O(N) time, O(1) space
+        let current = headNode;
+        let previous = null;
+        while (current !== null) {
+            const cloneNextNode = current.next
+            current.next = previous
+            previous = current;
+            current = cloneNextNode;
+        }
+        return previous;
+    }
+
+    let first = head;
+    let second = reverse(middleNode);
+    const cloneSecond = second;
+    let isPalindome = true;
+    
+    while (first !== null && second !== null) { // O(N) time, O(1) space
+        if (first.val !== second.val) isPalindome = false;
+        if (first.val === second.val
+            && first.val === middleNode.val
+            && second.val === middleNode.val) break;
+
+        first = first.next;
+        second = second.next;
+    }
+
+    middleNode.next = reverse(cloneSecond).next;
+
+    return isPalindome;
+};
+
+
+
+
+head = new Node(2)
+head.next = new Node(4)
+head.next.next = new Node(6)
+head.next.next.next = new Node(4)
+head.next.next.next.next = new Node(2)
+
+console.log(`Is palindrome: ${is_palindromic_linked_list(head)}`)
+
+head.next.next.next.next.next = new Node(2)
+console.log(`Is palindrome: ${is_palindromic_linked_list(head)}`)
+
+
+
