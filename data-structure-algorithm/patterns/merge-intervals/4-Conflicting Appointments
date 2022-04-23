@@ -23,10 +23,7 @@ const can_attend_all_appointments = function(intervals) {
         const aInterval = intervals[index];
         const bInterval = intervals[index + 1];
 
-        const aOverlapB = aInterval.start >= bInterval.start && aInterval.start <= bInterval.end;
-        const bOverlapA = bInterval.start >= aInterval.start && bInterval.start <= aInterval.end;
-
-        if (aOverlapB || bOverlapA) return false;
+        if (bInterval.start < aInterval.end) return false;
     }
 
     return true;
