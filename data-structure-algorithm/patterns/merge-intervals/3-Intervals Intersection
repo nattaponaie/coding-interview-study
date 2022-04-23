@@ -13,25 +13,27 @@ Explanation: The output list contains the common intervals between the two lists
 
 
 const merge = function(intervals_a, intervals_b) {
-	let aIndex = 0, bIndex = 0;
-	const output = [];
-	while (aIndex < intervals_a.length &&  bIndex < intervals_b.length) {
-		aInterval = intervals_a[aIndex];
-		bInterval = intervals_b[bIndex];
-		aOverlapB = aInterval.start <= bInterval.start && aInterval.end >= bInterval.end;
-		bOverlapA = bInterval.start <= aInterval.start && bInterval.end >= aInterval.end;
+  let result = [];
+  let indexA = 0, indexB = 0;
 
-		if (aOverlapB || bOverlapA) {
-			output.push(new Interval(
-				Math.max(aInterval.start, bInterval.start),
-				Math.min(aInterval.end, bInterval.end)
-            ))
-        }
+  while (indexA < intervals_a.length && indexB < intervals_b.length) {
+    const aInterval = intervals_a[indexA];
+    const bInterval = intervals_b[indexB];
 
-        if (aInterval.end < bInterval.end) {
-            i += 1;
-        } else j += 1;
+    const aOverlapB = aInterval.start >= bInterval.start && aInterval.start <= bInterval.end;
+    const bOverlapA = bInterval.start >= aInterval.start && bInterval.start <= aInterval.end;
+
+    if (aOverlapB || bOverlapA) {
+      result.push(new Interval(
+        Math.max(aInterval.start, bInterval.start),
+        Math.min(aInterval.end, bInterval.end)
+      ))
     }
-    return output;
+
+    if (aInterval.end < bInterval.end) indexA += 1;
+    else indexB += 1;
+  }
+
+  return result;
 };
 
