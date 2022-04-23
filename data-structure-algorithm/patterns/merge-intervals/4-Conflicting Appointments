@@ -1,0 +1,46 @@
+Problem Statement #
+Given an array of intervals representing ‘N’ appointments, find out if a person can attend all the appointments.
+
+Example 1:
+Appointments: [[1,4], [2,5], [7,9]]
+Output: false
+Explanation: Since [1,4] and [2,5] overlap, a person cannot attend both of these appointments.
+
+Example 2:
+Appointments: [[6,7], [2,4], [8,12]]
+Output: true
+Explanation: None of the appointments overlap, therefore a person can attend all of them.
+
+Example 3:
+Appointments: [[4,5], [2,3], [3,6]]
+Output: false
+Explanation: Since [4,5] and [3,6] overlap, a person cannot attend both of these appointments.
+
+const can_attend_all_appointments = function(intervals) {
+    intervals.sort((a,b) => a.start - b.start);
+
+    for (let index = 0; index < intervals.length - 1; index++) {
+        const aInterval = intervals[index];
+        const bInterval = intervals[index + 1];
+
+        const aOverlapB = aInterval.start >= bInterval.start && aInterval.start <= bInterval.end;
+        const bOverlapA = bInterval.start >= aInterval.start && bInterval.start <= aInterval.end;
+
+        if (aOverlapB || bOverlapA) return false;
+    }
+
+    return true;
+};
+
+Time complexity: Firstly, we sorted the N intervals, this will take O(N*logN). Secondly, start iteration of N intervals to check overlapping. This will take O(N). Therefore, it will take asymptotically equivalent to O(N * logN) time.
+
+Space complexity: Need extra space for sorting O(N)
+
+Appointments: [[1,4], [2,5], [7,9]]
+index = 0, aInterval = [1,4], bInterval = [2,5]
+
+Appointments: [[6,7], [2,4], [8,12]]
+[[2,4],[6,7],[8,12]]
+index = 0, aInterval = [2,4], bInterval = [6,7]
+index = 1, aInterval = [6,7], bInterval = [8,12]
+	
