@@ -1,0 +1,95 @@
+Find the Smallest Missing Positive Number (medium)#
+Given an unsorted array containing numbers, find the smallest missing positive number in it.
+
+Note: Positive numbers start from ‘1’.
+
+Example 1:
+Input: [-3, 1, 5, 4, 2]
+Output: 3
+Explanation: The smallest missing positive number is '3'
+
+Example 2:
+Input: [3, -2, 0, 1, 2]
+Output: 4
+
+Example 3:
+Input: [3, 2, 5, 1]
+Output: 4
+
+ [-3, 1, 5, 4, 2]
+ [1, 5, 4, 2, -1, -1]
+
+const find_first_smallest_missing_positive = function(nums) {
+	let negativeCount = 0;
+	let containZero = false;
+	const numsModified = [];
+	for (const num of nums) {
+		if (num < 0) {
+        negativeCount += 1;
+        continue;
+    } else if (num === 0) containZero += 1;
+        numsModified.push(num);
+    }
+
+    for (let currentIndex = 1; currentIndex <= negativeCount; currentIndex++) {
+        numsModified.push(-1);
+    }
+
+    if (negativeCount > 0) numsModified.push(-1);
+
+    let currentIndex = 0;
+    while (currentIndex < numsModified.length) {
+        const currentNum = numsModified[currentIndex];
+        const itsPositionIndex = containZero ? currentNum : currentNum - 1;
+        if (currentNum !== numsModified[itsPositionIndex]) {
+            [numsModified[currentIndex], numsModified[itsPositionIndex]] = [numsModified[itsPositionIndex], numsModified[currentIndex]];
+            continue;
+        }
+        currentIndex += 1;
+    }
+
+    for (let currentIndex = 0; currentIndex < numsModified.length; currentIndex++) {
+        const currentNum = numsModified[currentIndex];
+        const expectNum = containZero ? currentIndex : currentIndex + 1;
+        if (currentNum !== expectNum) return expectNum;
+    }
+
+    return -1;
+};
+
+Time complexity: O(N)
+Space complexity: O(N)
+
+# 2 Approach
+
+const find_first_smallest_missing_positive = function(nums) {
+	let currentIndex = 0;
+	while (currentIndex < nums.length) {
+		const currentNum = nums[currentIndex];
+		const itsPositionIndex = currentNum - 1;
+		if (currentNum > 0 && itsPositionIndex < nums.length - 1 && currentNum !== nums[itsPositionIndex]) {
+			[nums[currentIndex], nums[itsPositionIndex]] = [nums[itsPositionIndex], nums[currentIndex]];
+			continue;
+        }
+        currentIndex += 1;
+    }
+
+    for (let currentIndex = 0; currentIndex < nums.length; currentIndex ++) {
+        const currentNum = nums[currentIndex];
+        const expectNum = currentIndex + 1;
+        if (currentNum !== expectNum) return currentIndex + 1
+    }
+    return nums.length + 1;
+}
+
+ [-3i, 1, 5, 4, 2]
+ [-3, 1i, 5, 4, 2]
+	 [1, -3i, 5, 4, 2]
+[1, -3, 5i, 4, 2]
+	[1, -3, 2i, 4, 5]
+	[1, 2, -3i, 4, 5]
+[1, 2, -3, 4i, 5]
+[1, 2, -3, 4, 5i]
+
+Time complexity: O(N)
+Space complexity: O(1)
