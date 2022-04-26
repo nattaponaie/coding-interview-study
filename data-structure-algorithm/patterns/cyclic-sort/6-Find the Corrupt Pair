@@ -1,0 +1,45 @@
+Find the Corrupt Pair (easy)#
+We are given an unsorted array containing ‘n’ numbers taken from the range 1 to ‘n’. The array originally contained all the numbers from 1 to ‘n’, but due to a data error, one of the numbers got duplicated which also resulted in one number going missing. Find both these numbers.
+
+Example 1:
+Input: [3, 1, 2, 5, 2]
+Output: [2, 4]
+Explanation: '2' is duplicated and '4' is missing.
+
+Example 2:
+Input: [3, 1, 2, 3, 6, 4]
+Output: [3, 5]
+Explanation: '3' is duplicated and '5' is missing.
+
+const find_corrupt_numbers = function(nums) {
+	let currentIndex = 0;
+	while (currentIndex < nums.length) {
+		const currentNum = nums[currentIndex];
+		const itsPositionIndex = currentNum - 1;
+		if (currentNum !== nums[itsPositionIndex]) {
+			[nums[currentIndex], nums[itsPositionIndex]] = [nums[itsPositionIndex], nums[currentIndex]];
+			continue;
+        }   
+
+        currentIndex += 1;
+    }
+
+    for (let currentIndex = 0; currentIndex < nums.length; currentIndex++) {
+        const currentNum = nums[currentIndex];
+        const expectNum = currentIndex + 1;
+        if (currentNum !== expectNum) {
+            return [currentNum, currentIndex + 1];
+        }
+    }
+
+    return [-1, -1];
+};
+
+Time complexity: Firstly, we iterated through nums array but didn't increase index immediately. However, the worst case is that it could swap until N - 1 time.
+So, the first loop will take O(N) + O(N - 1) time which is asymptotically equivalent to O(N).
+Secondly, we iterated through sorted nums array again and check for unexpected number at each iteration.
+Therefore, this algorithm will be asymptotically equivalent to O(N)
+
+Space complexity: No extra space needed O(1)
+	
+
