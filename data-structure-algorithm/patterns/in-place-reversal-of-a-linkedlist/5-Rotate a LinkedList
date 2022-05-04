@@ -1,0 +1,53 @@
+class Node {
+  constructor(value, next=null){
+    this.value = value;
+    this.next = next;
+  }
+
+  get_list() {
+    result = "";
+    temp = this;
+    while (temp !== null) {
+      result += temp.value + " ";
+      temp = temp.next;
+    }
+    return result;
+  }
+};
+
+
+const rotate = function(head, rotations) {
+    let tail = head;
+    while (tail.next !== null) { // O(N) time, O(1) space
+        tail = tail.next;
+    }
+
+    let kCount = rotations;
+    while (kCount > 0) { // O(K) time, O(1) space
+        const cloneHeadNextNode = head.next;
+        tail.next = head;
+        tail = head;
+        head.next = null;
+        head = cloneHeadNextNode;
+
+        kCount -= 1;
+    }
+
+    return head;
+};
+
+head = new Node(1)
+head.next = new Node(2)
+head.next.next = new Node(3)
+head.next.next.next = new Node(4)
+head.next.next.next.next = new Node(5)
+head.next.next.next.next.next = new Node(6)
+
+console.log(`Nodes of original LinkedList are: ${head.get_list()}`)
+console.log(`Nodes of rotated LinkedList are: ${rotate(head, 3).get_list()}`)
+
+Time complexity: Firstly, we iterated through LinkedList to find a tail node. This will take O(N) time. 
+Secondly, we started a loop for K times and rotated the node to the right. This will take O(K). 
+Therefore, this algorithm will be asymptotically equivalent to O(N).
+
+Space complexity: O(1)
