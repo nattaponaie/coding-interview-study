@@ -1,0 +1,70 @@
+Connect All Level Order Siblings (medium)#
+Given a binary tree, connect each node with its level order successor. The last node of each level should point to the first node of the next level.
+
+    1   
+    2   
+    3   
+    4   
+    5   
+    6   
+    7   
+ null  
+ Example 1:  
+    12   
+    7   
+    1   
+    9   
+    10   
+    5   
+ null  
+
+class TreeNode {
+
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null; 
+  }
+  
+  // tree traversal using 'next' pointer
+  print_tree() {
+    result = "Traversal using 'next' pointer: ";
+    current = this;
+    while (current != null) {
+      result += current.value + " ";
+      current = current.next;
+    }
+    console.log(result);
+  }
+};
+
+const connect_all_siblings = function(root) {
+	const queue = [root];
+    let previous = null, current = null;
+
+	while (queue.length > 0) {
+		const currentLevelSize = queue.length;
+		for (let currentLevel = 0; currentLevel < currentLevelSize; currentLevel++) {
+			current = queue.shift();
+            if (previous !== null) previous.next = current;
+            previous = current;
+
+			if (current.left !== null) queue.push(current.left);
+			if (current.right !== null) queue.push(current.right);
+        }
+    }
+};
+
+
+
+var root = new TreeNode(12)
+root.left = new TreeNode(7)
+root.right = new TreeNode(1)
+root.left.left = new TreeNode(9)
+root.right.left = new TreeNode(10)
+root.right.right = new TreeNode(5)
+connect_all_siblings(root)
+root.print_tree()
+
+Time complexity: This algorithm will take O(N) where N is the total nodes in the tree and we only traverse each node only once.
+Space complexity: We have to store each node in the queue so it will take O(N) space.
