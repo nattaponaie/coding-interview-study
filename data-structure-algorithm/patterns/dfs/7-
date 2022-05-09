@@ -1,0 +1,55 @@
+class TreeNode {
+
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null; 
+  }
+};
+
+
+
+const find_maximum_path_sum = function(root) {
+	let maximumSum = -1;
+
+	const dfs = (node) => {
+		if (node === null) return 0;
+		
+		const leftSum = dfs(node.left);
+		const rightSum = dfs(node.right);
+		if (leftSum !== 0 && rightSum !== 0) {
+			const currentSum = leftSum + rightSum + node.value;
+			maximumSum = Math.max(maximumSum, currentSum);
+        }
+		
+		if (leftSum === 0 && rightSum === 0) return node.value
+        return Math.max(leftSum, rightSum) + node.value;
+    }
+
+    dfs(root);
+
+    return maximumSum;
+};
+
+Time complexity: O(N) as we traverse each node only once
+Space complexity: O(N) for recursion stack
+
+
+
+var root = new TreeNode(1)
+root.left = new TreeNode(2)
+root.right = new TreeNode(3)
+console.log(`Maximum Path Sum: ${find_maximum_path_sum(root)}`)
+
+root.left.left = new TreeNode(1)
+root.left.right = new TreeNode(3)
+root.right.left = new TreeNode(5)
+root.right.right = new TreeNode(6)
+root.right.left.left = new TreeNode(7)
+root.right.left.right = new TreeNode(8)
+root.right.right.left = new TreeNode(9)
+console.log(`Maximum Path Sum: ${find_maximum_path_sum(root)}`)
+
+root = new TreeNode(-1)
+root.left = new TreeNode(-3)
+console.log(`Maximum Path Sum: ${find_maximum_path_sum(root)}`)
