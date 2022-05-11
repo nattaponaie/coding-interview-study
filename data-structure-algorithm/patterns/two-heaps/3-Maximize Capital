@@ -1,0 +1,61 @@
+Problem Statement#
+Given a set of investment projects with their respective profits, we need to find the most profitable projects. We are given an initial capital and are allowed to invest only in a fixed number of projects. Our goal is to choose projects that give us the maximum profit. Write a function that returns the maximum total capital after selecting the most profitable projects.
+
+We can start an investment project only when we have the required capital. Once a project is selected, we can assume that its profit has become our capital.
+
+Example 1:
+Input: Project Capitals=[0,1,2], Project Profits=[1,2,3], Initial Capital=1, Number of Projects=2
+Output: 6
+Explanation:
+
+With initial capital of ‘1’, we will start the second project which will give us profit of ‘2’. Once we selected our first project, our total capital will become 3 (profit + initial capital).
+With ‘3’ capital, we will select the third project, which will give us ‘3’ profit.
+After the completion of the two projects, our total capital will be 6 (1+2+3).
+
+Example 2:
+Input: Project Capitals=[0,1,2,3], Project Profits=[1,2,3,5], Initial Capital=0, Number of Projects=3
+Output: 8
+Explanation:
+
+With ‘0’ capital, we can only select the first project, bringing out capital to 1.
+Next, we will select the second project, which will bring our capital to 3.
+Next, we will select the fourth project, giving us a profit of 5.
+After selecting the three projects, our total capital will be 8 (1+2+5).
+
+const find_maximum_capital = function(capital, profits, numberOfProjects, initialCapital) {
+	const maxProfits = new Heap([], null, (a,b) => b[1] - a[1]); // O(P) space
+	let totalCapital = initialCapital;
+	let investCount = 0;
+	
+	for (let i = 0; i < profits.length; i++) { // O(P * logP) time
+		const profit = profits[i];
+		if (i === initialCapital) {
+			totalCapital += profit
+            investCount += 1;
+            continue;
+        }
+
+        maxProfits.push([capital[i], profit])
+    }
+
+    while (investCount < numberOfProjects) { // O(N) time
+        let currentMaxProfit = 0;
+        for (const profit of maxProfits.toArray()) { // O(P) time
+            if (totalCapital >= profit[0]) {
+                currentMaxProfit = Math.max(currentMaxProfit, profit[1]);
+            }
+        }
+        if (currentMaxProfit !== 0) {
+            investCount += 1;
+            totalCapital += currentMaxProfit;
+        }
+    }
+
+    return totalCapital;
+};
+
+Time complexity: Firstly, we add all profits to the maxProfits heap. This will take O(P * logP) where P is represented by all profit elements. 
+Secondly, selecting N project and iterating through the maxProfits heap. This will take O(N * P) time. 
+Therefore, this algorithm will asymptotically equivalent to O(P * logP + N * P) time.
+
+Space complexity: Storing all profits to the heap take O(P) space.
