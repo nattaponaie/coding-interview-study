@@ -1,0 +1,47 @@
+Given an array of numbers which is sorted in ascending order and also rotated by some arbitrary number, find if a given ‘key’ is present in it.
+
+Write a function to return the index of the ‘key’ in the rotated array. If the ‘key’ is not present, return -1. You can assume that the given array does not have any duplicates.
+
+Example 1:
+Input: [10, 15, 1, 3, 8], key = 15
+Output: 1
+Explanation: '15' is present in the array at index '1'.
+
+Example 2:
+Input: [4, 5, 7, 9, 10, -1, 2], key = 10
+Output: 4
+Explanation: '10' is present in the array at index '4'.
+
+const search_rotated_array = function(arr, key) {
+	const binarySearch = (start, end) => {
+		while (start <= end) {
+            const middleIdx = Math.floor(start + (end - start) / 2);
+            const middleNum = arr[middleIdx];
+            if (middleNum === key) return middleIdx;
+            else if (middleNum < key) start = middleIdx + 1;
+            else end = middleIdx - 1;
+        }
+        return -1;
+    }
+	const findMaxIndex = () => {
+        let start = 0, end = arr.length - 1, middleIdx = 0;
+        while (start < end) {
+            middleIdx = Math.floor(start + (end - start) / 2);
+            const middleNum = arr[middleIdx];
+            if (arr[start] < middleNum) start = middleIdx;
+            else end = middleIdx;
+        }
+        return middleIdx;
+    }
+
+    const maxNumberIdx = findMaxIndex();
+    const firstHalfResult = binarySearch(0, maxNumberIdx);
+    if (firstHalfResult === -1) return binarySearch(maxNumberIdx + 1, arr.length - 1);
+    return firstHalfResult;
+}
+
+console.log(search_rotated_array([10, 15, 1, 3, 8], 15))
+console.log(search_rotated_array([4, 5, 7, 9, 10, -1, 2], 10))
+
+Time complexity: O(logN)
+Space complexity: O(1)
