@@ -1,0 +1,67 @@
+Rearrange String K Distance Apart (hard) #
+Given a string and a number ‘K’, find if the string can be rearranged such that the same characters are at least ‘K’ distance apart from each other.
+
+Example 1:
+Input: "mmpp", K=2
+Output: "mpmp" or "pmpm"
+Explanation: All same characters are 2 distance apart.
+
+Example 2:
+Input: "Programming", K=3
+Output: "rgmPrgmiano" or "gmringmrPoa" or "gmrPagimnor" and a few more
+Explanation: All same characters are 3 distance apart.
+
+Example 3:
+Input: "aab", K=2
+Output: "aba"
+Explanation: All same characters are 2 distance apart.
+
+Example 4:
+Input: "aappa", K=3
+Output: ""
+Explanation: We cannot find an arrangement of the string where any two 'a' are 3 distance apart.
+
+class CharFrequency {
+	constructor(char, frequency) {
+		this.char = char;
+		this.frequency = frequency;
+	}
+}
+
+const reorganize_string = function(str, k) {
+	const charFrequencyMap = {} // O(N) space
+	for (const char of str) { // O(N) time
+		if (char in charFrequencyMap) {
+			charFrequencyMap[char] += 1;
+		} else charFrequencyMap[char] = 1;
+	}
+
+	const maxHeap = new Heap([], null, (a,b) => a.frequency - b.frequency); // O(N) space
+	for ([key, value] of Object.entries(charFrequencyMap)) { // O(N*logN) time
+		maxHeap.push(new CharFrequency(key, value));
+	}
+
+	let output = "";
+	const queue = [];
+	while (maxHeap.length > 0) { // O(N*logN) time
+		const currentMaxFreq = maxHeap.pop();
+		output += currentMaxFreq.char;
+
+		queue.push(new CharFrequency(currentMaxFreq.char, currentMaxFreq. frequency - 1));
+		if (queue.length === k) {
+			const charFromQueue = queue.shift();
+			if (charFromQueue.frequency > 0) {
+				maxHeap.push(charFromQueue)
+			}
+		}
+	}
+
+	return output.length === str.length ? output : "";
+};
+
+Time complexity: Firstly, we stores character frequency to hashMap which takes O(N) time.
+Secondly, storing character frequency in to the maxHeap which will take O(N*logN).
+Lastly, iterating through maxHeap and append character to the output string which takes O(N*logN).
+Therefore, this algorithm will asymptotically equivalent to O(N*logN) time
+
+Space complexity: O(N) space for the worst case that there is zero distinct in the string.
