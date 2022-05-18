@@ -1,0 +1,83 @@
+You are given a list of tasks that need to be run, in any order, on a server. 
+Each task will take one CPU interval to execute but once a task has finished, 
+it has a cooling period during which it can’t be run again. If the cooling period for all tasks is ‘K’ intervals, 
+find the minimum number of CPU intervals that the server needs to finish all tasks.
+
+If at any time the server can’t execute any task then it must stay idle.
+
+Example 1:
+Input: [a, a, a, b, c, c], K=2
+Output: 7
+Explanation: a -> c -> b -> a -> c -> idle -> a
+
+Example 2:
+Input: [a, b, a], K=3
+Output: 5
+Explanation: a -> b -> idle -> idle -> a
+
+const Heap = require('./collections/heap'); 
+class Task {
+	constructor(task, frequency) {
+		this.task = task;
+		this.frequency = frequency;
+    }   
+}
+
+const schedule_tasks = function(tasks, k) {
+	const taskMap = {}; // O(N) space
+	for (const task of tasks) { // O(N) time
+		if (task in taskMap) {
+      taskMap[task] += 1;
+    } else taskMap[task] = 1;
+  }
+
+  const maxHeap = new Heap([], null, (a,b) => a.frequency - b.frequency); // O(N) space
+  for ([key, value] of Object.entries(taskMap)) { // O(N*logN) time
+      maxHeap.push(new Task(key, value));
+  }
+
+  const queue = [];
+  let intervalCount = 0;
+  while (maxHeap.length > 0 || queue.length > 0) { // O(N*logN) time
+    if (maxHeap.length > 0) {
+      const currentTask = maxHeap.pop(); // {a:2},{b:1}
+      intervalCount += 1;
+      if (currentTask.frequency > 1) {
+        currentTask.frequency = currentTask.frequency - 1;
+        queue.push(new Task(currentTask.task, currentTask.frequency))
+      }
+      continue;
+    }
+
+    if (queue.length >= k) {
+      const taskFromQueues = queue.splice(0, k);
+      for (const taskFromQueue of taskFromQueues) {
+        maxHeap.push(new Task(taskFromQueue.task, taskFromQueue.frequency));
+      }
+    } else {
+      queue.unshift(new Task("idle", 1));
+    }
+  }
+
+  return intervalCount;
+};
+
+
+
+console.log(`Minimum intervals needed to execute all tasks: ${schedule_tasks(['a', 'a', 'a', 'b', 'c', 'c'], 2)}`)
+console.log(`Minimum intervals needed to execute all tasks: ${schedule_tasks(['a', 'b', 'a'], 3)}`)
+
+Input: [a, a, a, b, c, c], K=2
+Output: 7
+
+maxHeap = [{a:3},{c:2},{b:1}], queue = [], intervalCount = 0
+maxHeap = [{c:2},{b:1}], queue = [{a:2}], intervalCount = 1
+maxHeap = [{b:1}], queue = [{a:2},{c:1}], intervalCount = 2
+maxHeap = [{a:2},{c:1}], queue = [], intervalCount = 3
+maxHeap = [{c:1}], queue = [{a:1}], intervalCount = 4
+maxHeap = [], queue = [{a:1}], intervalCount = 5
+maxHeap = [], queue = [{a:1},{idle:1}], intervalCount = 5
+maxHeap = [{a:1},{idle:1}], queue = [], intervalCount = 5
+maxHeap = [{idle:1}], queue = [], intervalCount = 6
+maxHeap = [], queue = [], intervalCount = 7
+
