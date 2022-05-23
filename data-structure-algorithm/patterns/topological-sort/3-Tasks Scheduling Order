@@ -1,0 +1,78 @@
+Problem Statement#
+There are ‘N’ tasks, labeled from ‘0’ to ‘N-1’. Each task can have some prerequisite tasks which need to be completed before it can be scheduled. Given the number of tasks and a list of prerequisite pairs, write a method to find the ordering of tasks we should pick to finish all tasks.
+
+Example 1:
+Input: Tasks=3, Prerequisites=[0, 1], [1, 2]
+Output: [0, 1, 2]
+Explanation: To execute task '1', task '0' needs to finish first. Similarly, task '1' needs
+to finish before '2' can be scheduled. A possible scheduling of tasks is: [0, 1, 2] 
+
+Example 2:
+Input: Tasks=3, Prerequisites=[0, 1], [1, 2], [2, 0]
+Output: []
+Explanation: The tasks have a cyclic dependency, therefore they cannot be scheduled.
+
+Example 3:
+Input: Tasks=6, Prerequisites=[2, 5], [0, 5], [0, 4], [1, 4], [3, 2], [1, 3]
+Output: [0 1 4 3 2 5] 
+Explanation: A possible scheduling of tasks is: [0 1 4 3 2 5] 
+
+const find_order = function(tasks, prerequisites) {
+    sortedOrder = [];
+
+    const taskPrerequisiteCount = Array(tasks).fill(0); // O(T) time, O(T) space
+    // [0,1,1]
+    // [0,0,1]
+    const graph = Array(tasks).fill(0).map(() => []); // O(T) time, O(P) space
+    console.log(graph)
+    // [[1],[2],[]]
+
+    for (let index = 0; index < prerequisites.length; index++) { // O(P) time
+        const prerequisite = prerequisites[index]; // [0,1],[1,2]
+        const parent = prerequisite[0]; // 0,1
+        const child = prerequisite[1]; // 1,2
+
+        graph[parent].push(child);
+        taskPrerequisiteCount[child] += 1;
+    }
+
+    const sources = []; // [0]
+    // [1]
+    for (index = 0; index < taskPrerequisiteCount.length; index++) { // O(T) time
+        if (taskPrerequisiteCount[index] === 0) sources.push(index);
+    }
+
+    while (sources.length > 0) { // O(T) time
+        const task = sources.shift(); // 0
+        sortedOrder.push(task); // 0
+        graph[task].forEach((child) => { // O(P) time
+            taskPrerequisiteCount[child] -= 1;
+            if (taskPrerequisiteCount[child] === 0) sources.push(child);
+        })
+    }
+
+    return sortedOrder.length === tasks ? sortedOrder : [];
+};
+
+
+console.log(`Is scheduling possible: ${
+  find_order(3, [
+    [0, 1],
+    [1, 2],
+  ])}`);
+console.log(`Is scheduling possible: ${
+  find_order(3, [
+    [0, 1],
+    [1, 2],
+    [2, 0],
+  ])}`);
+console.log(`Is scheduling possible: ${
+  find_order(6, [
+    [2, 5], [0, 5], [0, 4], [1, 4], [3, 2], [1, 3],
+  ])}`);
+
+
+Time complexity: In sources while loop, we only visit each task (vertice) only once and also visit its prerequisites (edges) only once as well.
+Therefore, this algorithm will take O(V + E) time.
+
+Space complexity: To store each vertice (task) with its edges (prerequisite), it will take O(V + E) space.
