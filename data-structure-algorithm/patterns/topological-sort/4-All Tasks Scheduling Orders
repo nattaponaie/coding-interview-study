@@ -1,0 +1,114 @@
+Problem Statement#
+There are ‘N’ tasks, labeled from ‘0’ to ‘N-1’. Each task can have some prerequisite tasks which need to be completed before it can be scheduled. Given the number of tasks and a list of prerequisite pairs, write a method to print all possible ordering of tasks meeting all prerequisites.
+
+Example 1:
+Input: Tasks=3, Prerequisites=[0, 1], [1, 2]
+Output: [0, 1, 2]
+Explanation: There is only possible ordering of the tasks.
+
+Example 2:
+Input: Tasks=4, Prerequisites=[3, 2], [3, 0], [2, 0], [2, 1]
+Output: 
+1) [3, 2, 0, 1]
+2) [3, 2, 1, 0]
+Explanation: There are two possible orderings of the tasks meeting all prerequisites.
+
+Example 3:
+Input: Tasks=6, Prerequisites=[2, 5], [0, 5], [0, 4], [1, 4], [3, 2], [1, 3]
+Output: 
+1) [0, 1, 4, 3, 2, 5]
+2) [0, 1, 3, 4, 2, 5]
+3) [0, 1, 3, 2, 4, 5]
+4) [0, 1, 3, 2, 5, 4]
+5) [1, 0, 3, 4, 2, 5]
+6) [1, 0, 3, 2, 4, 5]
+7) [1, 0, 3, 2, 5, 4]
+8) [1, 0, 4, 3, 2, 5]
+9) [1, 3, 0, 2, 4, 5]
+10) [1, 3, 0, 2, 5, 4]
+11) [1, 3, 0, 4, 2, 5]
+12) [1, 3, 2, 0, 5, 4]
+13) [1, 3, 2, 0, 4, 5]
+
+const printAllSortedOrders = (verticeParentCounts, graph, sources, sortedOrder) => {
+	if (sources.length > 0) {
+    // console.log('sources', sources)
+		for (let sourceIdx = 0; sourceIdx < sources.length; sourceIdx++) {
+			const vertice = sources[sourceIdx];
+			sortedOrder.push(vertice);
+
+			const nextSources = sources.slice(0);
+			nextSources.splice(nextSources.indexOf(vertice), 1);
+
+			graph[vertice].forEach((child) => {
+				verticeParentCounts[child] -= 1;
+				if (verticeParentCounts[child] === 0)
+					nextSources.push(child)
+        })
+
+      printAllSortedOrders(verticeParentCounts, graph, nextSources, sortedOrder);
+
+      sortedOrder.splice(sortedOrder.indexOf(vertice), 1);
+      for (let childIdx = 0; childIdx < graph[vertice].length; childIdx++) {
+        verticeParentCounts[graph[vertice][childIdx]] += 1;
+      }
+    }
+  }
+
+  if (sortedOrder.length === graph.length) {
+    console.log(sortedOrder);
+  }
+}
+
+const print_orders = function(tasks, prerequisites) {
+  const sortedOrder = [];
+	const verticeParentCounts = Array(tasks).fill(0);
+	const graph = Array(tasks).fill(0).map(() => Array());
+
+	for (let index = 0; index < prerequisites.length; index++) {
+		const prerequisite = prerequisites[index];
+		const parent = prerequisite[0];
+		const child = prerequisite[1];
+
+		graph[parent].push(child);
+		verticeParentCounts[child] += 1;
+  }
+
+  const sources = [];
+  for (let index = 0; index < verticeParentCounts.length; index++) {
+    const verticeParentCount = verticeParentCounts[index];
+    if (verticeParentCount === 0) sources.push(index);
+  }
+
+  printAllSortedOrders(verticeParentCounts, graph, sources, sortedOrder)
+};
+
+
+
+// console.log("Task Orders: ")
+// print_orders(3, [[0, 1], [1, 2]])
+
+// console.log('Task Orders: ');
+// print_orders(4, [
+//   [3, 2],
+//   [3, 0],
+//   [2, 0],
+//   [2, 1],
+// ]);
+
+console.log('Task Orders: ');
+print_orders(6, [
+  [2, 5],
+  [0, 5],
+  [0, 4],
+  [1, 4],
+  [3, 2],
+  [1, 3],
+]);
+
+
+Time and Space Complexity#
+If we don’t have any prerequisites, all combinations of the tasks can represent a topological ordering. As we know, 
+that there can be N! combinations for ‘N’ numbers, therefore the time and space complexity of our algorithm will be O(V! * E)
+where ‘V’ is the total number of tasks and ‘E’ is the total prerequisites. 
+We need the ‘E’ part because in each recursive call, at max, we remove (and add back) all the edges.
