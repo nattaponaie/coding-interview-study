@@ -1,0 +1,107 @@
+There is a dictionary containing words from an alien language for which we don’t know the ordering of the alphabets. Write a method to find the correct order of the alphabets in the alien language. It is given that the input is a valid dictionary and there exists an ordering among its alphabets.
+
+Example 1:
+
+Input: Words: ["ba", "bc", "ac", "cab"]
+Output: bac
+Explanation: Given that the words are sorted lexicographically by the rules of the alien language, so
+from the given words we can conclude the following ordering among its characters:
+
+1. From "ba" and "bc", we can conclude that 'a' comes before 'c'.
+2. From "bc" and "ac", we can conclude that 'b' comes before 'a'
+
+From the above two points, we can conclude that the correct character order is: "bac"
+Example 2:
+
+Input: Words: ["cab", "aaa", "aab"]
+Output: cab
+Explanation: From the given words we can conclude the following ordering among its characters:
+
+1. From "cab" and "aaa", we can conclude that 'c' comes before 'a'.
+2. From "aaa" and "aab", we can conclude that 'a' comes before 'b'
+
+From the above two points, we can conclude that the correct character order is: "cab"
+Example 3:
+
+Input: Words: ["ywx", "wz", "xww", "xz", "zyy", "zwz"]
+Output: ywxz
+Explanation: From the given words we can conclude the following ordering among its characters:
+
+1. From "ywx" and "wz", we can conclude that 'y' comes before 'w'.
+2. From "wz" and "xww", we can conclude that 'w' comes before 'x'.
+3. From "xww" and "xz", we can conclude that 'w' comes before 'z'
+4. From "xz" and "zyy", we can conclude that 'x' comes before 'z'
+5. From "zyy" and "zwz", we can conclude that 'y' comes before 'w'
+
+From the above five points, we can conclude that the correct character order is: "ywxz"
+
+const findFirstUniqueCharacter = (firstWord, secondWord) => {
+	for (let index = 0; index < Math.max(firstWord.length, secondWord.length); index++) {
+		if (index > firstWord.length - 1 || index > secondWord.length - 1) break;
+	
+		const firstWordChar = firstWord[index];
+		const secondWordChar = secondWord[index];
+
+		if (firstWordChar !== secondWordChar) return [firstWordChar, secondWordChar]
+    }
+    return [];
+}
+
+const find_order = function(words) {
+	const uniqueWordOrders = new Set(); // O(E) space
+	const dictionary = {}; // O(V) space
+
+	for (let index = 0; index < words.length; index++) { // O(N) time
+		if (index === words.length - 1) break;
+		const currentWord = words[index];
+		const nextWord = words[index+1];
+		[firstWordChar, secondWordChar] = findFirstUniqueCharacter(currentWord, nextWord);
+		uniqueWordOrders.add([firstWordChar, secondWordChar]);
+		dictionary[firstWordChar] = 1;
+		dictionary[secondWordChar] = 1;
+    }
+
+    const verticeParentCountMap = {}; // O(V) space
+    const graph = {} // O(V + E) space
+
+    for (const wordOrder of uniqueWordOrders) { // O(E) time
+        const parent = wordOrder[0];
+        if (!(parent in verticeParentCountMap)) verticeParentCountMap[parent] = 0
+        if (!(parent in graph)) graph[parent] = []
+
+        const child = wordOrder[1];
+        if (!(child in graph)) graph[child] = []
+        graph[parent].push(child);
+
+        if (child in verticeParentCountMap) {
+            verticeParentCountMap[child] += 1;
+        } else verticeParentCountMap[child] = 1;
+    }
+
+    const sources = [];
+    for ([key, value] of Object.entries(verticeParentCountMap)) { // O(V) time
+        if (value === 0) sources.push(key);
+    }
+
+    const sortedOrders = [];
+    while (sources.length > 0) { // O(V + E) time
+        const node = sources.shift();
+        sortedOrders.push(node);
+
+        graph[node].forEach(child => {
+            verticeParentCountMap[child] -= 1;
+            if (verticeParentCountMap[child] === 0) sources.push(child);
+        })
+    }
+
+    return sortedOrders.length === Object.keys(dictionary).length ? sortedOrders.join("") : "";
+};
+
+console.log(`Character order: ${find_order(["ba", "bc", "ac", "cab"])}`)
+console.log(`Character order: ${find_order(["cab", "aaa", "aab"])}`)
+console.log(`Character order: ${find_order(["ywx", "wz", "xww", "xz", "zyy", "zwz"])}`)
+
+Time complexity: As we only iterates through each vertex only once and for each vertex we also iterates through its edges.
+Therefore, this algorithm will be asymptotically equivalent to O(V + E).
+
+Space complexity: As we stores all edges for each vertex in adjacency list. So, it will take O(V + E) space.
