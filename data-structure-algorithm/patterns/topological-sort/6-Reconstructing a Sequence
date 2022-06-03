@@ -1,0 +1,162 @@
+Reconstructing a Sequence (hard) #
+Given a sequence originalSeq and an array of sequences, write a method to find if originalSeq can be uniquely reconstructed from the array of sequences.
+
+Unique reconstruction means that we need to find if originalSeq is the only sequence such that all sequences in the array are subsequences of it.
+
+Example 1:
+Input: originalSeq: [1, 2, 3, 4], seqs: [[1, 2], [2, 3], [3, 4]]
+Output: true
+Explanation: The sequences [1, 2], [2, 3], and [3, 4] can uniquely reconstruct   
+[1, 2, 3, 4], in other words, all the given sequences uniquely define the order of numbers 
+in the 'originalSeq'. 
+
+Example 2:
+Input: originalSeq: [1, 2, 3, 4], seqs: [[1, 2], [2, 3], [2, 4]]
+Output: false
+Explanation: The sequences [1, 2], [2, 3], and [2, 4] cannot uniquely reconstruct 
+[1, 2, 3, 4]. There are two possible sequences we can construct from the given sequences:
+1) [1, 2, 3, 4]
+2) [1, 2, 4, 3]
+
+Example 3:
+Input: originalSeq: [3, 1, 4, 2, 5], seqs: [[3, 1, 5], [1, 4, 2, 5]]
+Output: true
+Explanation: The sequences [3, 1, 5] and [1, 4, 2, 5] can uniquely reconstruct 
+[3, 1, 4, 2, 5].
+
+
+const findAllPossibleSequence = (verticeWithParentCount, graph, sources, sortedOrderOutput, sortedOrder) => {
+	for (let index = 0; index < sources.length; index++) {
+		const vertice = sources[index];
+		sortedOrder.push(vertice);
+		
+		const nextSources = sources.slice(0);
+		nextSources.splice(nextSources.indexOf(vertice), 1);
+
+		graph[vertice].forEach((child) => {
+			verticeWithParentCount[child] -= 1;
+			if (verticeWithParentCount[child] === 0) {
+				nextSources.push(child);
+      }
+    })
+
+    findAllPossibleSequence(verticeWithParentCount, graph, nextSources, sortedOrderOutput, sortedOrder)
+
+    sortedOrder.splice(sortedOrder.indexOf(vertice), 1)
+    for (let childIdx = 0; childIdx < graph[vertice].length; childIdx++) {
+      verticeWithParentCount[graph[vertice][childIdx]] += 1;
+    }
+  }
+
+  if (sortedOrder.length === Object.keys(graph).length) {
+    sortedOrderOutput.push(sortedOrder.slice(0));
+  }
+}
+
+const can_construct = function(originalSeq, sequences) {
+	const verticeWithParentCount = {};
+	const graph = {};
+
+	for (let index = 0; index < sequences.length; index++) {
+		const sequence = sequences[index];
+		for (let numIdx = 0; numIdx < sequence.length - 1; numIdx++) {
+			const parent = sequence[numIdx];
+			const child = sequence[numIdx+1];
+
+      if (!(parent in graph)) graph[parent] = []
+      if (!(child in graph)) graph[child] = []
+
+      if (!(parent in verticeWithParentCount)) verticeWithParentCount[parent] = 0
+      if (!(child in verticeWithParentCount)) verticeWithParentCount[child] = 0
+
+			graph[parent].push(child);
+			verticeWithParentCount[child] += 1;
+    }
+  }
+
+  const sources = [];
+  for ([key, value] of Object.entries(verticeWithParentCount)) {
+    if (value === 0) {
+      sources.push(parseInt(key, 10));
+    }
+  }
+
+  const sortedOrder = [];
+  findAllPossibleSequence(verticeWithParentCount, graph, sources, sortedOrder, [])
+
+  if (sortedOrder.length === 1) {
+    for (let index = 0; index < originalSeq.length; index++) {
+      const originalNum = originalSeq[index];
+      const outputNum = sortedOrder[0][index];
+      if (originalNum !== outputNum) return false;
+    }
+    return true;
+  }
+
+  return false;
+};
+
+#1 Approach
+Time complexity: O(V! + E)
+Space complexity: O(V! + E)
+
+
+console.log(`Can construct: ${can_construct([1, 2, 3, 4], [[1, 2], [2, 3], [3, 4]])}`)
+console.log(`Can construct: ${can_construct([1, 2, 3, 4], [[1, 2], [2, 3], [2, 4]])}`)
+console.log(`Can construct: ${can_construct([3, 1, 4, 2, 5], [[3, 1, 5], [1, 4, 2, 5]])}`)
+
+
+#2 Approach
+const can_construct = function(originalSeq, sequences) {
+  const verticeWithParentCount = {};
+  const graph = {};
+
+  for (const sequence of sequences) {
+    for (const num of sequence) {
+      verticeWithParentCount[num] = 0;
+      graph[num] = [];
+    }
+  }
+
+  for (const sequence of sequences) {
+    for (let index = 0; index < sequence.length - 1; index++) {
+      const parent = sequence[index];
+      const child = sequence[index+1];
+      graph[parent].push(child);
+      verticeWithParentCount[child] += 1;
+    }
+  }
+
+  const sortedOrder = [];
+  const sources = [];
+  for ([key,value] of Object.entries(verticeWithParentCount)) {
+    if (value === 0) sources.push(parseInt(key, 10));
+  }
+
+  while (sources.length > 0) {
+    if (sources.length > 1) return false;
+    const vertice = sources.shift();
+    if (originalSeq[sortedOrder.length] !== vertice) return false;
+
+    sortedOrder.push(vertice);
+
+    graph[vertice].forEach(child => {
+      verticeWithParentCount[child] -= 1;
+      if (verticeWithParentCount[child] === 0) sources.push(child);
+    })
+  }
+
+
+  return sortedOrder.length === originalSeq.length;
+};
+
+
+console.log(`Can construct: ${can_construct([1, 2, 3, 4], [[1, 2], [2, 3], [3, 4]])}`)
+console.log(`Can construct: ${can_construct([1, 2, 3, 4], [[1, 2], [2, 3], [2, 4]])}`)
+console.log(`Can construct: ${can_construct([3, 1, 4, 2, 5], [[3, 1, 5], [1, 4, 2, 5]])}`)
+
+Time complexity: In while loop, we iterates through each vertice once and also iterate through vertice's edges.
+Therefore, this algorithm will be equivalent to O(V+E) time where V is total number and E is total sequences.
+
+Space complexity: As we store each vertice with its edges in adjacency list. 
+Therefore, it will take O(V+E) space.
