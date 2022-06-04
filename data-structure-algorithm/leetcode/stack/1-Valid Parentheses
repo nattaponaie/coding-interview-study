@@ -1,0 +1,52 @@
+Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.
+
+An input string is valid if:
+
+Open brackets must be closed by the same type of brackets.
+Open brackets must be closed in the correct order.
+ 
+
+Example 1:
+
+Input: s = "()"
+Output: true
+Example 2:
+
+Input: s = "()[]{}"
+Output: true
+Example 3:
+
+Input: s = "(]"
+Output: false
+ 
+
+Constraints:
+
+1 <= s.length <= 104
+s consists of parentheses only '()[]{}'.
+
+/**
+ * @param {string} s
+ * @return {boolean}
+ */
+var isValid = function(s) {
+	const parenthesisStack = [];
+	for (let index = 0; index < s.length; index++) {
+		const character = s[index];
+		if (character === '(' || character === '{' || character === '[') {
+			parenthesisStack.push(character)	
+        } else {
+			const openBracket = parenthesisStack.pop();
+			if (character === ')' && openBracket !== '(') return false;
+			if (character === '}' && openBracket !== '{') return false;
+			if (character === ']' && openBracket !== '[') return false;
+        }
+    }
+
+    return parenthesisStack.length === 0;
+}
+
+Time complexity: As we iterates through every character in s string.
+Therefore, it will take O(N) where N is the total element of s string.
+
+Space complexity: In worst case, it would take O(N) space to store every bracket from s string if it's valid.
