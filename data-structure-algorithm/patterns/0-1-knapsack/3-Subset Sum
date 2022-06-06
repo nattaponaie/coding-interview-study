@@ -1,0 +1,52 @@
+Problem Statement#
+Given a set of positive numbers, determine if a subset exists whose sum is equal to a given number ‘S’.
+
+Example 1:#
+Input: {1, 2, 3, 7}, S=6
+Output: True
+The given set has a subset whose sum is '6': {1, 2, 3}
+
+Example 2:#
+Input: {1, 2, 7, 1, 5}, S=10
+Output: True
+The given set has a subset whose sum is '10': {1, 2, 7}
+
+Example 3:#
+Input: {1, 3, 4, 8}, S=6
+Output: False
+The given set does not have any subset whose sum is equal to '6'.
+
+const canPartition = function(num, sum) {
+	const n = num.length;
+	const dp = Array(2).fill(false).map(() => Array(sum+1).fill(false)); // O(2+S) space
+
+	for (let i = 0; i < n; i++) { // O(N) time
+		dp[i%2][0] = true;
+    }
+
+    for (let s = 1; s < sum; s++) { // O(S) time
+        dp[0][s] = num[0] === s
+    }
+
+    for (let i = 1; i < n; i++) { // O(N) time
+        for (let s = 1; s <= sum; s++) { // O(S) time
+            if (dp[(i-1)%2][s]) {
+                dp[i%2][s] = dp[(i-1)%2][s]
+            } else if (s >= num[i]) {
+                dp[i%2][s] = dp[(i-1)%2][s - num[i]]
+            }
+        }
+    }
+
+    console.log(dp)
+
+    return dp[(n-1)%2][sum];
+};
+
+
+console.log(`Can partitioning be done: ---> ${canPartition([1, 2, 3, 4], 6)}`);
+console.log(`Can partitioning be done: ---> ${canPartition([1, 2, 7, 1, 5], 10)}`);
+console.log(`Can partitioning be done: ---> ${canPartition([1, 3, 4, 8], 6)}`);
+
+Time complexity: O(N*S) time
+Space complexity: O(S) space
