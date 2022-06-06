@@ -1,0 +1,71 @@
+Given a set of positive numbers, partition the set into two subsets with minimum difference between their subset sums.
+
+Example 1:#
+Input: {1, 2, 3, 9}
+Output: 3
+Explanation: We can partition the given set into two subsets where minimum absolute difference 
+between the sum of numbers is '3'. Following are the two subsets: {1, 2, 3} & {9}.
+
+Example 2:#
+Input: {1, 2, 7, 1, 5}
+Output: 0
+Explanation: We can partition the given set into two subsets where minimum absolute difference 
+between the sum of number is '0'. Following are the two subsets: {1, 2, 5} & {7, 1}.
+
+Example 3:#
+Input: {1, 3, 100, 4}
+Output: 92
+Explanation: We can partition the given set into two subsets where minimum absolute difference 
+between the sum of numbers is '92'. Here are the two subsets: {1, 3, 4} & {100}.
+
+let canPartition = function(num) {
+  const n = num.length;
+  let sum = 0;
+  for (const number of num) { // O(N) time
+    sum += number;
+  }
+  const possibleSum = Math.floor(sum / 2);
+
+  const dp = Array(2).fill(false).map(() => Array(possibleSum+1).fill(false)); // O(2*S) time
+  for (let i = 0; i < n; i++) { // O(N) time
+    dp[i%2][0] = true;
+  }
+
+  for (let s = 1; s < possibleSum; s++) { // O(S/2) time
+    dp[0][s] = num[0] === s;
+  }
+
+  for (let i = 1; i < n; i++) { // O(N) time
+    for (let s = 1; s <= possibleSum; s++) { // O(S/2) time
+      if (dp[(i-1)%2][s]) {
+        dp[i%2][s] = dp[(i-1)%2][s]
+      } else if (s >= num[i]) {
+        dp[i%2][s] = dp[(i-1)%2][s-num[i]];
+      }
+    }
+  }
+  console.log(dp)
+
+  let sum1 = 0;
+  // Find the largest index in the last row which is true
+  for (let i = possibleSum; i >= 0; i--) { // O(S/2) time
+    // console.log(i)
+    if (dp[(n - 1)%2][i] === true) {
+      sum1 = i;
+      break;
+    }
+  }
+
+  // console.log('sum - sum1', sum, sum1)
+  const sum2 = sum - sum1;
+  // console.log('sum2', sum2)
+  return Math.abs(sum2 - sum1);
+};
+
+
+console.log(`Minimum subset difference is: ---> ${canPartition([1, 2, 3, 9])}`);
+console.log(`Minimum subset difference is: ---> ${canPartition([1, 2, 7, 1, 5])}`);
+console.log(`Minimum subset difference is: ---> ${canPartition([1, 3, 100, 4])}`);
+
+Time complexity: O(N*S) time
+Space complexity: O(S) space
