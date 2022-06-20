@@ -1,0 +1,57 @@
+var MinStack = function() {
+    this.elements = [];
+    this.min = Infinity;
+};
+
+/** 
+ * @param {number} val
+ * @return {void}
+ */
+MinStack.prototype.push = function(val) {
+    const stackLength = this.elements.length;
+    const latestNum = stackLength > 0 ? this.elements[stackLength - 1].min : val;
+    this.elements.push({
+        value: val,
+        min: Math.min(latestNum, val)
+    });
+};
+
+/**
+ * @return {void}
+ */
+MinStack.prototype.pop = function() {
+    this.elements.pop()
+};
+
+/**
+ * @return {number}
+ */
+MinStack.prototype.top = function() {
+    const stackLength = this.elements.length;
+    return this.elements[stackLength - 1].value
+};
+
+/**
+ * @return {number}
+ */
+MinStack.prototype.getMin = function() {
+    const stackLength = this.elements.length;
+    return this.elements[stackLength - 1].min;
+};
+
+/** 
+ * Your MinStack object will be instantiated and called as such:
+ * var obj = new MinStack()
+ * obj.push(val)
+ * obj.pop()
+ * var param_3 = obj.top()
+ * var param_4 = obj.getMin()
+ */
+
+Time complexity:
+    - push: O(1)
+    - pop: O(1)
+    - top: O(1)
+    - getMin: O(1)
+
+Space complexity: O(N) space
