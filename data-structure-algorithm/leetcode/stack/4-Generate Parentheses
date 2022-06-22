@@ -1,0 +1,60 @@
+Given n pairs of parentheses, write a function to generate all combinations of well-formed parentheses.
+
+ 
+
+Example 1:
+
+Input: n = 3
+Output: ["((()))","(()())","(())()","()(())","()()()"]
+Example 2:
+
+Input: n = 1
+Output: ["()"]
+ 
+
+Constraints:
+
+1 <= n <= 8
+
+class Parenthesis {
+	constructor(text, openCount, closeCount) {
+		this.text = text;
+		this.openCount = openCount;
+		this.closeCount = closeCount;
+    }
+}
+
+/**
+ * @param {number} n
+ * @return {string[]}
+ */
+var generateParenthesis = function(n) {
+	const queue = [new Parenthesis("(", 1, 0)];
+	const result = [];
+	while (queue.length > 0) {
+		const parenthesis = queue.shift();
+		if (parenthesis.openCount < n) {
+			queue.push(
+				new Parenthesis(parenthesis.text + "(", parenthesis.openCount + 1, parenthesis.closeCount)
+            )
+        }
+        if (parenthesis.closeCount < parenthesis.openCount) {
+            queue.push(
+                new Parenthesis(parenthesis.text + ")", parenthesis.openCount, parenthesis.closeCount + 1)
+            )
+
+        }
+
+        if (parenthesis.openCount === n && parenthesis.closeCount === n) {
+            result.push(parenthesis.text);
+        }
+    }
+
+    return result;
+};
+
+Time complexity: For worst case we will end up with 2 child for each node like BinaryTree and we know that BinaryTree has 2^N leaf nodes.
+So, the total elements that we will push in the queue will be O(2^N).
+
+Space complexity: As it's mentioned above, it cannot have more than 2^N leaf nodes.
+Therefore, the space complexity will be O(2^N).
