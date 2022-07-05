@@ -1,0 +1,54 @@
+Given a string s, find the length of the longest substring without repeating characters.
+
+Example 1:
+Input: s = "abcabcbb"
+Output: 3
+Explanation: The answer is "abc", with the length of 3.
+
+Example 2:
+Input: s = "bbbbb"
+Output: 1
+Explanation: The answer is "b", with the length of 1.
+
+Example 3:
+Input: s = "pwwkew"
+Output: 3
+Explanation: The answer is "wke", with the length of 3.
+Notice that the answer must be a substring, "pwke" is a subsequence and not a substring. 
+
+Constraints:
+0 <= s.length <= 5 * 104
+s consists of English letters, digits, symbols and spaces.
+
+/**
+ * @param {string} s
+ * @return {number}
+ */
+ var lengthOfLongestSubstring = function(s) {
+	let repeatingCharDict = {};
+	let windowStart = 0;
+	let maxSubString = 0;
+
+	for (let windowEnd = 0; windowEnd < s.length; windowEnd++) {
+		const char = s[windowEnd];
+		if (!(char in repeatingCharDict)) {
+            repeatingCharDict[char] = 0;
+        }
+        repeatingCharDict[char] += 1;
+
+        while (repeatingCharDict[char] > 1) {
+            repeatingCharDict[s[windowStart]] -= 1;
+            if (repeatingCharDict[s[windowStart]] === 0) {
+                delete repeatingCharDict[s[windowStart]];
+            }
+            windowStart += 1;
+        }
+        maxSubString = Math.max(maxSubString, (windowEnd - windowStart) + 1);
+    }
+
+    return maxSubString;
+};
+
+Time complexity: O(N) for iterating through every char in the string
+Space complexity: In worst case, the entire string is not repeating at all. So it will be O(N) space for
+storing every char in hashmap
