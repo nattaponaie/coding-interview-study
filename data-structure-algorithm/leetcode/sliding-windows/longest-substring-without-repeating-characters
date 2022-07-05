@@ -52,3 +52,31 @@ s consists of English letters, digits, symbols and spaces.
 Time complexity: O(N) for iterating through every char in the string
 Space complexity: In worst case, the entire string is not repeating at all. So it will be O(N) space for
 storing every char in hashmap
+
+
+#2 Approach
+/**
+ * @param {string} s
+ * @return {number}
+ */
+var lengthOfLongestSubstring = function(s) {
+	let repeatingCharDict = {};
+	let windowStart = 0;
+	let maxSubString = 0;
+
+	for (let windowEnd = 0; windowEnd < s.length; windowEnd++) {
+		const char = s[windowEnd];
+		if ((char in repeatingCharDict) && windowStart <= repeatingCharDict[char]) {
+            windowStart = repeatingCharDict[char] + 1;
+        } else {
+            maxSubString = Math.max(maxSubString, (windowEnd - windowStart) + 1);    
+        }
+        
+        repeatingCharDict[char] = windowEnd;
+    }
+
+    return maxSubString;
+};
+
+Time complexity: O(N)
+Space complexity: O(N)
