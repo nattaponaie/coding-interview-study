@@ -1,0 +1,51 @@
+Given two strings s and t, return true if t is an anagram of s, and false otherwise.
+
+An Anagram is a word or phrase formed by rearranging the letters of a different word or phrase, typically using all the original letters exactly once.
+
+
+Example 1:
+Input: s = "anagram", t = "nagaram"
+Output: true
+
+Example 2:
+Input: s = "rat", t = "car"
+Output: false
+ 
+
+Constraints:
+
+1 <= s.length, t.length <= 5 * 104
+s and t consist of lowercase English letters.
+ 
+
+Follow up: What if the inputs contain Unicode characters? How would you adapt your solution to such a case?
+
+/**
+ * @param {string} s
+ * @param {string} t
+ * @return {boolean}
+ */
+var isAnagram = function(s, t) {
+	if (t.length === 0) return false;
+	const tMap = {}
+	for (const char of t) {
+		if (!(char in tMap)) {
+			tMap[char] = 0;
+        }
+		tMap[char] += 1;
+    }
+
+    let matchCount = 0;
+    for (const char of s) {
+        if (char in tMap) {
+            tMap[char] -= 1;
+            matchCount += 1;
+            if (tMap[char] === 0) delete tMap[char];
+        }
+    }
+
+    return Object.keys(tMap).length === 0 && matchCount === s.length;
+};
+
+Time complexity: O(N)
+Space complexity: O(N)
