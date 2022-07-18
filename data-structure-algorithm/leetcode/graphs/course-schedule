@@ -30,10 +30,10 @@ All the pairs prerequisites[i] are unique.
  * @return {boolean}
  */
 var canFinish = function(numCourses, prerequisites) {
-	const nodeWithParentCount = Array(numCourses).fill(0);
-	const graph = Array(numCourses).fill(0).map(() => []);
+	const nodeWithParentCount = Array(numCourses).fill(0); // O(V) space
+	const graph = Array(numCourses).fill(0).map(() => []); // O(V+E) space
 
-	for (let index = 0; index < prerequisites.length; index++) {
+	for (let index = 0; index < prerequisites.length; index++) { // O(E) time
 		const course = prerequisites[index];
 		const parent = course[1];
 		const child = course[0];
@@ -43,18 +43,18 @@ var canFinish = function(numCourses, prerequisites) {
     }
 
     const sources = [];
-    for (let index = 0; index < numCourses; index++) {
+    for (let index = 0; index < numCourses; index++) { // O(V) time
         if (nodeWithParentCount[index] === 0) {
             sources.push(index);
         }
     }
 
     const sortedOrder = [];
-    while (sources.length > 0) {
+    while (sources.length > 0) { // O(V) time
         const vertice = sources.shift();
         sortedOrder.push(vertice);
 
-        graph[vertice].forEach((child) => {
+        graph[vertice].forEach((child) => { // O(E) time
             nodeWithParentCount[child] -= 1;
             if (nodeWithParentCount[child] === 0) {
                 sources.push(child);
@@ -65,4 +65,6 @@ var canFinish = function(numCourses, prerequisites) {
     return sortedOrder.length === numCourses;
 };
 
-
+Time complexity: In while loop, we only iterate through each vertice only once and each vertice's edges are also accessed and removed only once as well.
+Therefore, this algorithm will asymptotically equivalent to O(V+E) time.
+Space complexity: As we store every vertice with its edges. Therefore, it will also be O(V+E) space.
