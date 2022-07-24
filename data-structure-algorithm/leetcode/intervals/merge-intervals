@@ -1,0 +1,51 @@
+Given an array of intervals where intervals[i] = [starti, endi], merge all overlapping intervals, 
+and return an array of the non-overlapping intervals that cover all the intervals in the input.
+
+Example 1:
+Input: intervals = [[1,3],[2,6],[8,10],[15,18]]
+Output: [[1,6],[8,10],[15,18]]
+Explanation: Since intervals [1,3] and [2,6] overlap, merge them into [1,6].
+
+Example 2:
+Input: intervals = [[1,4],[4,5]]
+Output: [[1,5]]
+Explanation: Intervals [1,4] and [4,5] are considered overlapping.
+ 
+
+Constraints:
+1 <= intervals.length <= 104
+intervals[i].length == 2
+0 <= starti <= endi <= 104
+
+/**
+ * @param {number[][]} intervals
+ * @return {number[][]}
+ */
+ var merge = function(intervals) {
+    intervals.sort((a,b) => a[0] - b[0])
+	const result = []; // [[1,6],[8,10]]
+	let startInterval = intervals[0][0]; // 1 - 8 - 15
+	let endInterval = intervals[0][1]; // 3 - 6 - 10 - 18
+
+	for (let index = 1; index < intervals.length; index++) {
+		const interval = intervals[index]; // [2,6] - [8,10] - [15,18]
+		const currentStart = interval[0]; // 2 - 8 - 15
+		const currentEnd = interval[1]; // 6 - 10 - 18
+
+		if (currentStart <= endInterval) {
+			endInterval = Math.max(endInterval, currentEnd); // 6
+			startInterval = Math.min(startInterval, currentStart)
+    } else {
+        result.push([startInterval, endInterval])
+        startInterval = currentStart;
+        endInterval = currentEnd;
+    }
+    }
+
+    result.push([startInterval, endInterval])
+    return result;
+};
+
+Time complexity: O(N) for merging overlap interval and O(N*logN) as we sort the intervals list.
+Therefore, this algorithm will asymptotically equivalent to O(N*logN)
+Space complexity: O(N) for sorting
