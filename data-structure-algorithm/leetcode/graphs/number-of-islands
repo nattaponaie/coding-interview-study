@@ -36,7 +36,7 @@ grid[i][j] is '0' or '1'.
  var numIslands = function(grid) {
     const rows = grid.length;
     const columns = grid[0].length;
-    const visited = new Set();
+    const visited = new Set(); // O(M*N) space
     
     const bfs = (rowIdx, colIdx) => {
         const queue = [[rowIdx, colIdx]];
@@ -79,6 +79,9 @@ grid[i][j] is '0' or '1'.
     return islandsCount;
 };
 
+// Time complexity: O(M*N) as we only visit each node only once.
+// Space complexity: O(M*N) for storing adjacency graph.
+
 
 // 2 DFS
 
@@ -115,3 +118,8 @@ grid[i][j] is '0' or '1'.
     
     return islands
 };
+
+Time complexity: O(M*N) as we mark the visited node already that why we only visit each node only once. 
+Therefore, this algorithm will asymptotically equivalent to O(M*N).
+
+Space complexity: It's O(1) without extra space for recursive call
