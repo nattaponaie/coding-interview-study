@@ -67,4 +67,5 @@ var maxAreaOfIsland = function(grid) {
 };
 
 Time complexity: O(M*N), As we visit each area only once
-Space complexity: O(1) no extra space needed
+Space complexity: O(1) no extra space needed if we are not counting call stack of recursion.
+if it's counted, the space will take O(M*N) 
