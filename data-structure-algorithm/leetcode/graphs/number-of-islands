@@ -123,3 +123,4 @@ Time complexity: O(M*N) as we mark the visited node already that why we only vis
 Therefore, this algorithm will asymptotically equivalent to O(M*N).
 
 Space complexity: It's O(1) without extra space for recursive call
+if it's counted, the space will take O(M*N) 
