@@ -1,0 +1,70 @@
+Given an m x n matrix board containing 'X' and 'O', capture all regions that are 4-directionally surrounded by 'X'.
+
+A region is captured by flipping all 'O's into 'X's in that surrounded region.
+
+Example 1:
+Input: board = [["X","X","X","X"],["X","O","O","X"],["X","X","O","X"],["X","O","X","X"]]
+Output: [["X","X","X","X"],["X","X","X","X"],["X","X","X","X"],["X","O","X","X"]]
+Explanation: Notice that an 'O' should not be flipped if:
+- It is on the border, or
+- It is adjacent to an 'O' that should not be flipped.
+The bottom 'O' is on the border, so it is not flipped.
+The other three 'O' form a surrounded region, so they are flipped.
+
+Example 2:
+Input: board = [["X"]]
+Output: [["X"]]
+ 
+
+Constraints:
+m == board.length
+n == board[i].length
+1 <= m, n <= 200
+board[i][j] is 'X' or 'O'.
+
+/**
+ * @param {character[][]} board
+ * @return {void} Do not return anything, modify board in-place instead.
+ */
+var solve = function(board) {
+    const rowLength = board.length;
+    const colLength = board[0].length;
+    
+    const dfs = (rowIdx, colIdx) => {
+        if (rowIdx < 0 || rowIdx >= rowLength
+           || colIdx < 0 || colIdx >= colLength
+           || board[rowIdx][colIdx] !== 'O') return;
+        
+        board[rowIdx][colIdx] = 'T';
+        
+        dfs(rowIdx-1, colIdx)
+        dfs(rowIdx, colIdx+1)
+        dfs(rowIdx+1, colIdx)
+        dfs(rowIdx, colIdx-1)
+    }
+    
+//     let and right
+    for (let rowIdx = 0; rowIdx < rowLength; rowIdx++) {
+        dfs(rowIdx, 0)
+        dfs(rowIdx, colLength - 1)
+    }
+    
+//     top and bottom
+    for (let colIdx = 0; colIdx < colLength; colIdx++) {
+        dfs(0, colIdx)
+        dfs(rowLength - 1, colIdx)
+    }
+    
+    
+    for (let rowIdx = 0; rowIdx < rowLength; rowIdx++) {
+        for (let colIdx = 0; colIdx < colLength; colIdx++) {
+            if (board[rowIdx][colIdx] === 'O') board[rowIdx][colIdx] = 'X'
+            if (board[rowIdx][colIdx] === 'T') board[rowIdx][colIdx] = 'O'
+        }
+    }
+    
+    return board;
+};
+
+Time complexity: O(M*N)
+Space complexity: O(M*N)
