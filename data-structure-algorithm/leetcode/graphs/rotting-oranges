@@ -1,0 +1,84 @@
+You are given an m x n grid where each cell can have one of three values:
+
+0 representing an empty cell,
+1 representing a fresh orange, or
+2 representing a rotten orange.
+Every minute, any fresh orange that is 4-directionally adjacent to a rotten orange becomes rotten.
+
+Return the minimum number of minutes that must elapse until no cell has a fresh orange. If this is impossible, return -1.
+
+Example 1:
+Input: grid = [[2,1,1],[1,1,0],[0,1,1]]
+Output: 4
+
+Example 2:
+Input: grid = [[2,1,1],[0,1,1],[1,0,1]]
+Output: -1
+Explanation: The orange in the bottom left corner (row 2, column 0) is never rotten, because rotting only happens 4-directionally.
+
+Example 3:
+Input: grid = [[0,2]]
+Output: 0
+Explanation: Since there are already no fresh oranges at minute 0, the answer is just 0.
+ 
+
+Constraints:
+
+m == grid.length
+n == grid[i].length
+1 <= m, n <= 10
+grid[i][j] is 0, 1, or 2.
+
+/**
+ * @param {number[][]} grid
+ * @return {number}
+ */
+var orangesRotting = function(grid) {
+    const rowLength = grid.length;
+    const colLength = grid[0].length;
+    
+    let minuteCount = 0;
+    let freshOrangeCount = 0;
+    
+    const queue = [];
+    for (let rowIdx = 0; rowIdx < rowLength; rowIdx++) {
+        for (let colIdx = 0; colIdx < colLength; colIdx++) {
+            if (grid[rowIdx][colIdx] === 2) queue.push([rowIdx, colIdx]);
+            else if (grid[rowIdx][colIdx] === 1) freshOrangeCount += 1;
+        }
+    }
+
+    while(queue.length > 0 && freshOrangeCount > 0) {
+        const currentQueueLength = queue.length;
+        for (let queueIdx = 0; queueIdx < currentQueueLength; queueIdx++) {
+            const position = queue.shift(); // [0,0] - [0,1] - [1,0]
+            const positionRowIdx = position[0]
+            const positionColIdx = position[1]
+            
+            const directions = [[positionRowIdx-1,positionColIdx],[positionRowIdx,positionColIdx+1]
+                               ,[positionRowIdx+1,positionColIdx],[positionRowIdx,positionColIdx-1]];
+            
+            for (const direction of directions) {
+                const directionRowIdx = direction[0]
+                const directionColIdx = direction[1]
+                
+                if (directionRowIdx < 0 || directionRowIdx >= rowLength
+                   || directionColIdx < 0 || directionColIdx >= colLength
+                   || grid[directionRowIdx][directionColIdx] !== 1) continue;
+                
+                queue.push([directionRowIdx, directionColIdx])
+                freshOrangeCount -= 1;
+                grid[directionRowIdx][directionColIdx] = 2
+            }
+        }
+        minuteCount += 1;
+    }
+    
+    return freshOrangeCount > 0 ? - 1 : minuteCount;
+};
+
+Time complexity: In the first loop we iterate through M*N array so it will take O(M*N).
+In the second while loop, we iterate through the queue and only visit each node only once.
+Therefore, this algorithm will take O(M*N) time.
+
+Space complexity: In the worse case, it will take O(M*N) space to store every node in the queue.
