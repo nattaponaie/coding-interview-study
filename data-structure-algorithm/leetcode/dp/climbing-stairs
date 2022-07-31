@@ -30,3 +30,17 @@ var climbStairs = function(n) {
 
 Time complexity: O(N) as we use memoization concept, therefore, each node is visted only once.
 Space complexity: O(N) for storing memoization data
+
+
+// DP bottom-up
+var climbStairs = function(n) {
+    let one = 1, two = 1;
+    
+    for (let idx = 0; idx < n - 1; idx++) {
+        const temp = one;
+        one = one + two;
+        two = temp
+    }
+    return one;
+}
+
