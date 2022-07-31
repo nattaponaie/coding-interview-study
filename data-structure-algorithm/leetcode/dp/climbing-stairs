@@ -1,0 +1,32 @@
+/**
+ * @param {number} n
+ * @return {number}
+ */
+
+// DFS
+var climbStairs = function(n) {
+    const stepRecord = {};
+    
+    const dfs = (step, prevStep) => {
+        if (step > n) return false;
+
+        if (step === n) {
+            if (!(prevStep in stepRecord)) stepRecord[prevStep] = 0;
+            stepRecord[prevStep] += 1;
+            return true;
+        }
+
+        if (!(step in stepRecord)) stepRecord[step] = 0;
+        else return true;
+
+        if (dfs(step+1, step)) if (step+1 in stepRecord) stepRecord[step] += stepRecord[step+1]
+        if (dfs(step+2, step)) if (step+2 in stepRecord) stepRecord[step] += stepRecord[step+2]
+        return true;
+    }
+
+    dfs(0)
+    return Object.values(stepRecord)[0]
+};
+
+Time complexity: O(N) as we use memoization concept, therefore, each node is visted only once.
+Space complexity: O(N) for storing memoization data
