@@ -1,0 +1,88 @@
+Given an integer array nums that may contain duplicates, return all possible subsets (the power set).
+
+The solution set must not contain duplicate subsets. Return the solution in any order.
+
+Example 1:
+Input: nums = [1,2,2]
+Output: [[],[1],[1,2],[1,2,2],[2],[2,2]]
+
+Example 2:
+Input: nums = [0]
+Output: [[],[0]]
+ 
+Constraints:
+1 <= nums.length <= 10
+-10 <= nums[i] <= 10
+
+/**
+ * @param {number[]} nums
+ * @return {number[][]}
+ */
+
+# Approach 1
+var subsetsWithDup = function(nums) {
+	const result = [];
+	const resultHash = {};
+	
+    const currentSubset = []
+    const currentHash = {}
+    for (const num of nums) {
+        currentHash[num] = 0
+    }
+
+	const dfs = (ith) => {
+		if (ith >= nums.length) {
+			const currentHashStr = JSON.stringify(currentHash);
+			if (currentHashStr in resultHash) return;
+
+			result.push([...currentSubset]);
+			resultHash[currentHashStr] = 1;
+			return;
+        }
+
+        currentSubset.push(nums[ith])
+        currentHash[nums[ith]] += 1;
+        dfs(ith + 1);
+        
+        const popNum = currentSubset.pop();
+        currentHash[popNum] -= 1;
+
+        dfs(ith + 1);
+    }
+
+	dfs(0)
+	return result;
+};
+
+## Approach 2
+var subsetsWithDup = function(nums) {
+	const result = [];
+    const currentSubset = []
+    
+    nums.sort((a,b) => a-b);
+
+	const dfs = (ith) => {
+		if (ith >= nums.length) {
+			result.push([...currentSubset]);
+			return;
+        }
+        
+        const num = nums[ith]
+        currentSubset.push(num)
+        dfs(ith + 1)
+        currentSubset.pop()
+        
+        while(ith < nums.length && nums[ith] === nums[ith+1]) {
+            ith += 1;
+        }
+        dfs(ith + 1)
+    }
+
+	dfs(0)
+	return result;
+};
+
+Both approaches
+
+Time complexity: O(N*2^N) 
+Space complexity: O(N*2^N) 
