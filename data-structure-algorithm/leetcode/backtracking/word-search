@@ -1,0 +1,83 @@
+Given an m x n grid of characters board and a string word, return true if word exists in the grid.
+
+The word can be constructed from letters of sequentially adjacent cells, 
+where adjacent cells are horizontally or vertically neighboring. 
+The same letter cell may not be used more than once.
+
+ 
+
+Example 1:
+Input: board = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]], word = "ABCCED"
+Output: true
+
+Example 2:
+Input: board = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]], word = "SEE"
+Output: true
+
+Example 3:
+Input: board = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]], word = "ABCB"
+Output: false
+ 
+
+Constraints:
+m == board.length
+n = board[i].length
+1 <= m, n <= 6
+1 <= word.length <= 15
+board and word consists of only lowercase and uppercase English letters.
+ 
+
+Follow up: Could you use search pruning to make your solution faster with a larger board?
+
+/**
+ * @param {character[][]} board
+ * @param {string} word
+ * @return {boolean}
+ */
+ var exist = function(board, word) {
+    let currentWordIdx = 0;
+    // let resultVisited = new Set();
+    // const resultVisited = {};
+    
+    // const getPosition = (rowIdx, colIdx) => rowIdx + "" + colIdx;
+    
+    const dfs = (rowIdx, colIdx) => {
+        if (currentWordIdx === word.length) {
+            return true;
+        }
+        if (currentWordIdx >= word.length) return false;
+        // if (resultVisited.has(getPosition(rowIdx, colIdx))) return false;
+        // if (getPosition(rowIdx, colIdx) in resultVisited && resultVisited[getPosition(rowIdx, colIdx)] === 1) return false;
+        if (rowIdx < 0 || rowIdx >= board.length) return false;
+        if (colIdx < 0 || colIdx >= board[0].length) return false;
+        if (board[rowIdx][colIdx] === "-") return false;
+        
+        const currentWord = board[rowIdx][colIdx];
+        if (currentWord !== word[currentWordIdx]) return false;
+        currentWordIdx += 1;
+        board[rowIdx][colIdx] = "-"
+        // resultVisited.add(getPosition(rowIdx, colIdx));
+        // resultVisited[getPosition(rowIdx, colIdx)] = 1
+        
+        const isFound = dfs(rowIdx-1, colIdx) || dfs(rowIdx, colIdx+1) || dfs(rowIdx+1, colIdx) || dfs(rowIdx, colIdx-1);
+        // resultVisited.delete(getPosition(rowIdx, colIdx));
+        // resultVisited[getPosition(rowIdx, colIdx)] = 0
+        board[rowIdx][colIdx] = currentWord;
+        currentWordIdx -= 1;
+        return isFound;
+    }
+    
+    for (let rowIdx = 0; rowIdx < board.length; rowIdx++) {
+        for (let colIdx = 0; colIdx < board[0].length; colIdx++) {
+            if (dfs(rowIdx, colIdx)) return true;
+        }
+    }
+    
+    return false;
+};
+
+Time complexity: Since we iterate through N*M grid size of the input board
+and we also do DFS for each iteration. Since inside DFS we have 4 direction to go.
+Therefore, this algorithm will asymptotically equivalent to O(N * M * (4^N))
+
+Space complexity: O(N*M) for recursion stack where M and N are grid size of the input board.
