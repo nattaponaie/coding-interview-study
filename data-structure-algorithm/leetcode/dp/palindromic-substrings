@@ -1,0 +1,65 @@
+Given a string s, return the number of palindromic substrings in it.
+
+A string is a palindrome when it reads the same backward as forward.
+
+A substring is a contiguous sequence of characters within the string.
+
+
+Example 1:
+Input: s = "abc"
+Output: 3
+Explanation: Three palindromic strings: "a", "b", "c".
+
+Example 2:
+Input: s = "aaa"
+Output: 6
+Explanation: Six palindromic strings: "a", "a", "a", "aa", "aa", "aaa".
+ 
+
+Constraints:
+1 <= s.length <= 1000
+s consists of lowercase English letters.
+
+/**
+ * @param {string} s
+ * @return {number}
+ */
+var countSubstrings = function(s) {
+    let palindromeCount = 0;
+    
+    const findPalindrome = (left, right) => {
+        let count = 0;
+        while (left >= 0 && right < s.length && s[left] === s[right]) {
+            count += 1;
+            left -= 1;
+            right += 1;
+        }
+        return count;
+    }
+    
+    for (let idx = 0; idx < s.length; idx++) {
+        palindromeCount += findPalindrome(idx, idx)
+        
+        palindromeCount += findPalindrome(idx, idx+1)
+    }
+    
+    return palindromeCount;
+};
+
+Time complexity: O(N^2)
+Space complexity: O(1)
+
+/**
+ 
+ idx = 0, palindromeCount = 0
+    left = 0, right = 0, palindromeCount = 1
+    left = -1, right = 1, palindromeCount = 1
+    
+    
+    left = 0, right = 1, palindromeCount = 2
+    left = -1, right = 2, palindromeCount = 2
+    
+ idx = 1, palindromeCount = 2
+    left = 1, right = 1, palindromeCount = 2
+ 
+ */
