@@ -47,3 +47,37 @@ Constraints:
     
 //     return maxLIS;
 // };
+
+// O(N*logN) time, O(1) space
+var lengthOfLIS = function(nums) {
+    const binarySearch = (array, targetNum) => {
+        let left = 0, right = array.length - 1;
+        
+        while (left <= right) {
+            const middleIdx = Math.floor((left + right) / 2);
+            const middleNum = array[middleIdx]
+            
+            if (middleNum === targetNum) return middleIdx;
+            else if (middleNum <= targetNum) {
+                left = middleIdx + 1
+            } else right = middleIdx - 1;
+            
+        }
+        
+        return left
+    }
+    
+    const sub = [nums[0]];
+    for (let idx = 1; idx < nums.length; idx++) {
+        const currentNum = nums[idx];
+        const prevNum = sub[sub.length - 1]
+        if (currentNum === prevNum) continue
+        else if (currentNum > prevNum) sub.push(currentNum)
+        else {
+            const replaceIdx = binarySearch(sub, currentNum)
+            sub[replaceIdx] = currentNum
+        }
+    }
+    
+    return sub.length
+}
