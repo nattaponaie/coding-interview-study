@@ -1,0 +1,100 @@
+You are given an integer array coins representing coins of different denominations and an integer amount representing a total amount of money.
+
+Return the number of combinations that make up that amount. If that amount of money cannot be made up by any combination of the coins, return 0.
+
+You may assume that you have an infinite number of each kind of coin.
+
+The answer is guaranteed to fit into a signed 32-bit integer.
+
+ 
+
+Example 1:
+
+Input: amount = 5, coins = [1,2,5]
+Output: 4
+Explanation: there are four ways to make up the amount:
+5=5
+5=2+2+1
+5=2+1+1+1
+5=1+1+1+1+1
+Example 2:
+
+Input: amount = 3, coins = [2]
+Output: 0
+Explanation: the amount of 3 cannot be made up just with coins of 2.
+Example 3:
+
+Input: amount = 10, coins = [10]
+Output: 1
+ 
+
+Constraints:
+
+1 <= coins.length <= 300
+1 <= coins[i] <= 5000
+All the values of coins are unique.
+0 <= amount <= 5000
+
+/**
+ * @param {number} amount
+ * @param {number[]} coins
+ * @return {number}
+ */
+// var change = function(amount, coins) {
+//     const dp = Array(coins.length).fill(0).map(() => Array(amount+1).fill(0));
+    
+//     let count = 0;
+//     const dfs = (ith, sum) => {
+//         if (sum === 0) {
+//             count += 1;
+//             dp[ith][sum] = true;
+//             return;
+//         } else if (sum < 0) {
+//             dp[ith][sum] = false;
+//             return;
+//         }
+        
+//         if (dp[ith][sum] !== 0) {
+//             if (dp[ith][sum] === true) count += 1;
+//             return;
+//         }
+        
+//         for (let coinIdx = ith; coinIdx < coins.length; coinIdx++) {
+//             const coin = coins[coinIdx];
+//             dfs(coinIdx, sum - coin);
+//         }
+//     }
+    
+//     dfs(0, amount)
+    
+//     return count;
+// };
+
+var change = function(amount, coins) {
+    const amountLength = amount+1;
+    const dp = Array(coins.length).fill(0).map(() => Array(amountLength).fill(0));
+    
+    for (let coinIdx = 0; coinIdx < coins.length; coinIdx++) {
+        dp[coinIdx][0] = 1
+    }
+    
+    for (let coinIdx = coins.length - 1; coinIdx >= 0; coinIdx--) {
+        const coin = coins[coinIdx];
+        
+        for (let amountIdx = 1; amountIdx < amountLength; amountIdx++) {
+            const exchangedCoin = amountIdx - coin;
+            if (exchangedCoin >= 0 && exchangedCoin <= amountLength) {
+                dp[coinIdx][amountIdx] += dp[coinIdx][exchangedCoin];
+            }
+            
+            if (coinIdx + 1 < coins.length) {
+                dp[coinIdx][amountIdx] += dp[coinIdx + 1][amountIdx]
+            }
+        }
+    }
+    
+    return dp[0][amount]
+}
+
+Time complexity: O(M*N) where M is amount and N is length of coins
+Space complexity: O(M*N) where M is amount and N is length of coins
