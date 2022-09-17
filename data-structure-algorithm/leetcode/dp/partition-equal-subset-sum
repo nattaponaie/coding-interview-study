@@ -1,0 +1,94 @@
+Given a non-empty array nums containing only positive integers, 
+find if the array can be partitioned into two subsets such that the sum of elements in both subsets is equal.
+
+
+Example 1:
+Input: nums = [1,5,11,5]
+Output: true
+Explanation: The array can be partitioned as [1, 5, 5] and [11].
+
+Example 2:
+Input: nums = [1,2,3,5]
+Output: false
+Explanation: The array cannot be partitioned into equal sum subsets.
+ 
+Constraints:
+1 <= nums.length <= 200
+1 <= nums[i] <= 100
+
+/**
+ * @param {number[]} nums
+ * @return {boolean}
+ */
+// Time complexity: O(N * S) where S is the sum of total element in nums divided by 2
+// Space complexity: O(N * S) where S is the sum of total element in nums divided by 2
+// var canPartition = function(nums) {
+//     let sum = 0;
+//     const numsLength = nums.length;
+//     for (let numIdx = 0; numIdx < numsLength; numIdx++) {
+//         sum += nums[numIdx];
+//     }
+    
+//     if (sum === 0) return false;
+    
+//     if (sum % 2 !== 0) return false;
+    
+//     const targetSum = Math.floor(sum / 2);
+//     const dp = Array(numsLength).fill(0).map(() => Array(targetSum+1).fill(-1))
+    
+//     const dfs = (ith, target) => {
+//         if (target === 0) {
+//             return true;
+//         }
+//         if (target < 0 || ith >= numsLength) {
+//             return false;
+//         }
+        
+//         if (dp[ith][target] !== -1) {
+//             return dp[ith][target];
+//         }
+        
+//         const currentNum = nums[ith];
+//         dp[ith][target] = dfs(ith + 1, target - currentNum) || dfs(ith + 1, target)
+        
+//         return dp[ith][target];
+//     }
+    
+//     return dfs(1, targetSum - nums[0]) && dfs(1, targetSum);
+    
+// };
+
+// Time complexity: O(N * S) where S is the sum of total element in nums divided by 2
+// Space complexity: O(N * S) where S is the sum of total element in nums divided by 2
+// This solution could be faster than the brute force + memoization solution.
+// This is because the length of sum combination could go big but comparing to this solution which use Set to prevent the same sum 
+var canPartition = function(nums) {
+    let sum = 0;
+    for (const num of nums) {
+        sum += num;
+    }
+    
+    if (sum % 2 !== 0) return false;
+    
+    const targetSum = Math.floor(sum / 2);
+    
+    let subsetSum = new Set()
+    subsetSum.add(0)
+    
+    for (let numIdx = nums.length - 1; numIdx >= 0; numIdx--) {
+        const num = nums[numIdx];
+        
+        const newSet = new Set();
+        for (const [key, value] of subsetSum.entries()) {
+            const prevSum = parseInt(key, 10);
+            const currentSum = num + prevSum;
+            if (currentSum === targetSum) return true;
+            
+            newSet.add(currentSum)
+            newSet.add(prevSum)
+        }
+        subsetSum = newSet;
+    }
+    
+    return subsetSum.has(targetSum)
+}
