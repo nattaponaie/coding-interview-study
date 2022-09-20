@@ -1,0 +1,101 @@
+Given a string s and a dictionary of strings wordDict, return true if s can be segmented into a space-separated sequence of one or more dictionary words.
+
+Note that the same word in the dictionary may be reused multiple times in the segmentation.
+ 
+
+Example 1:
+Input: s = "leetcode", wordDict = ["leet","code"]
+Output: true
+Explanation: Return true because "leetcode" can be segmented as "leet code".
+
+Example 2:
+Input: s = "applepenapple", wordDict = ["apple","pen"]
+Output: true
+Explanation: Return true because "applepenapple" can be segmented as "apple pen apple".
+Note that you are allowed to reuse a dictionary word.
+
+Example 3:
+Input: s = "catsandog", wordDict = ["cats","dog","sand","and","cat"]
+Output: false
+ 
+
+Constraints:
+1 <= s.length <= 300
+1 <= wordDict.length <= 1000
+1 <= wordDict[i].length <= 20
+s and wordDict[i] consist of only lowercase English letters.
+All the strings of wordDict are unique.
+
+/**
+ * @param {string} s
+ * @param {string[]} wordDict
+ * @return {boolean}
+ */
+
+// Time complexity: O(N * M * N)
+// Space complexity: O(N)
+// var wordBreak = function(s, wordDict) {
+//     const dp = Array(s.length).fill(-1);
+    
+//     const dfs = (ith) => {
+//         // console.log('in', ith)
+//         if (ith >= s.length) {
+//             // console.log('yo')
+//             dp[ith] = true;
+//             return dp[ith];
+//         }
+        
+//         if (dp[ith] !== -1) return dp[ith];
+
+//         // console.log('ith', ith)
+//         for (const word of wordDict) {
+//             // console.log('word', word)
+//             let wordIdx = 0;
+//             for (let charIdx = ith; charIdx < s.length; charIdx++) {
+//                 // console.log('s[charIdx]', s[charIdx], 'word[charIdx]', word[wordIdx])
+                
+//                 if (s[charIdx] !== word[wordIdx]) break;
+//                 wordIdx += 1;
+                
+//                 if (wordIdx >= word.length) {
+//                     const isMatched = dfs(charIdx+1);
+//                     dp[ith] = isMatched;
+//                     if (isMatched) return dp[ith];
+//                 }
+//             }
+//         }   
+//         dp[ith] = false;
+//         return dp[ith];
+//     }
+    
+//     return dfs(0);
+// };
+
+// Time complexity: O(N * M * N)
+// Space complexity: O(N)
+var wordBreak = function(s, wordDict) {
+    const dp = Array(s.length+1).fill(false);
+    dp[s.length] = true;
+    
+    for (let charIdx = s.length - 1; charIdx >= 0; charIdx--) {
+        // console.log('charIdx', charIdx)
+        for (const word of wordDict) {
+            // console.log('word', word)
+            let wordIdx = 0;
+            for (let strIdx = charIdx; strIdx < s.length; strIdx++) {
+                // console.log('s[strIdx]', s[strIdx], 'word[wordIdx]', word[wordIdx])
+                if (s[strIdx] !== word[wordIdx]) break;
+                wordIdx += 1;
+            
+                if (wordIdx >= word.length) {
+                    dp[charIdx] = dp[charIdx + word.length];
+                    break;
+                }   
+            }
+            if (dp[charIdx]) break;
+        }
+    }
+    
+    // console.log(dp)
+    return dp[0]
+}
