@@ -1,0 +1,82 @@
+Given an integer array nums, find a contiguous non-empty subarray within the array that has the largest product, and return the product.
+
+The test cases are generated so that the answer will fit in a 32-bit integer.
+
+A subarray is a contiguous subsequence of the array.
+
+ 
+
+Example 1:
+Input: nums = [2,3,-2,4]
+Output: 6
+Explanation: [2,3] has the largest product 6.
+
+Example 2:
+Input: nums = [-2,0,-1]
+Output: 0
+Explanation: The result cannot be 2, because [-2,-1] is not a subarray.
+ 
+
+Constraints:
+1 <= nums.length <= 2 * 104
+-10 <= nums[i] <= 10
+The product of any prefix or suffix of nums is guaranteed to fit in a 32-bit integer.
+
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+// Time complexity: O(N^2)
+// Space complexity: O(N)
+// var maxProduct = function(nums) {
+//     if (nums.length === 1) return nums[0];
+    
+//     const getKey = (ith, sum) => ith + '' + sum;
+//     const dp = new Set();
+    
+//     let max = -Infinity;
+//     const dfs = (ith, currentLargest) => {
+//         if (ith >= nums.length) {
+//             dp.add(getKey(ith, currentLargest));
+//             return;
+//         }
+        
+//         if (dp.has(getKey(ith, currentLargest))) return;
+        
+//         const newLargest = currentLargest * nums[ith];
+//         max = Math.max(max, newLargest);
+//         dp.add(getKey(ith, currentLargest));
+//         dfs(ith + 1, newLargest)
+//     }
+    
+//     for (let numIdx = 0; numIdx < nums.length; numIdx++) {
+//         dfs(numIdx, 1);   
+//     }
+    
+//     return max
+// };
+
+// Time complexity: O(N)
+// Space complexity: O(1)
+var maxProduct = function (nums) {
+    if (nums.length === 0) return 0;
+    
+    let max = nums[0], currentMax = 1, currentMin = 1;
+    
+    for (const num of nums) {
+        const prevMax = currentMax;
+        currentMax = Math.max(num, num * currentMax, num * currentMin);
+        currentMin = Math.min(num, num * prevMax, num * currentMin);
+        
+        max = Math.max(max, currentMax, currentMin)
+    }
+    
+    return max
+};
+
+// [2,3,-2,4]
+// [-2,0,-1]
+// [-2,3,-4]
+// [-3,-1,-1]
+// [-3,0,1,-2]
+// [2,-5,-2,-4,3]
