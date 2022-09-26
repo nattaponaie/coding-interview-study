@@ -1,0 +1,99 @@
+Given the head of a linked list, remove the nth node from the end of the list and return its head.
+
+ 
+Example 1:
+Input: head = [1,2,3,4,5], n = 2
+Output: [1,2,3,5]
+
+Example 2:
+Input: head = [1], n = 1
+Output: []
+
+Example 3:
+Input: head = [1,2], n = 1
+Output: [1]
+ 
+
+Constraints:
+The number of nodes in the list is sz.
+1 <= sz <= 30
+0 <= Node.val <= 100
+1 <= n <= sz
+ 
+
+Follow up: Could you do this in one pass?
+
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val, next) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.next = (next===undefined ? null : next)
+ * }
+ */
+/**
+ * @param {ListNode} head
+ * @param {number} n
+ * @return {ListNode}
+ */
+// var removeNthFromEnd = function(head, n) {
+//     if (head === null) return head
+//     if (head.next === null) return null;
+    
+//     const reverse = (head) => {
+//         let prev = null, current = head;
+//         while (current !== null) {
+//             const tempNextNode = current.next;
+//             current.next = prev;
+//             prev = current;
+//             current = tempNextNode
+//         }
+//         return prev;
+//     }
+    
+//     head = reverse(head);
+    
+//     let prev = null, current = head, ithCount = 1;
+//     while (current !== null) {
+//         if (ithCount === n) {
+//             if (prev === null) head = current.next
+//             else prev.next = current.next
+//             break;
+//         }
+//         prev = current
+//         current = current.next
+//         ithCount += 1;
+//     }
+    
+//     return reverse(head);
+// };
+
+var removeNthFromEnd = function(head, n) {
+    const dummyNode = new ListNode(0, head);
+    
+    let left = dummyNode, right = head, nCount = 0;
+    while (right !== null) {
+        if (nCount < n) {
+            nCount += 1;
+            right = right.next;
+            continue;
+        }
+        left = left.next;
+        right = right.next;
+    }
+    
+    const nextLeftNode = left.next;
+    left.next = nextLeftNode.next
+    
+    return dummyNode.next;
+}
+
+// [1,2,3,4,5]
+// 2
+// [1]
+// 1
+// [1,2]
+// 1
+// [1,2]
+// 2
+// [4,5,4]
+// 1
