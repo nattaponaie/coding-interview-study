@@ -74,8 +74,8 @@ It is guaranteed that the list represents a number that does not have leading ze
 //     return head;
 // };
 
-// Time complexity: O(N)
-// Space complexity: O(1)
+// Time complexity: O(max(l1, l2))
+// Space complexity: O(max(l2, l2))
 var addTwoNumbers = function(l1, l2) {
     let head = new ListNode();
     
