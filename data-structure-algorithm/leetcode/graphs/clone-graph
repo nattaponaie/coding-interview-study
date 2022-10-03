@@ -88,3 +88,33 @@ var cloneGraph = function(node) {
     
     return Object.values(adjHashMap)[0];
 };
+
+
+// DFS
+var cloneGraph = function(node) {
+    const nodeHashMap = {};
+
+    const dfs = (currentNode) => {
+        if (currentNode === null) return;
+
+        const currentValue = currentNode.val;
+        const currentNeighbors = currentNode.neighbors;
+
+        if (!(currentValue in nodeHashMap)) nodeHashMap[currentValue] = new Node(currentValue, []);
+
+        for (const neighbor of currentNeighbors) {
+            const neighborValue = neighbor.val;
+            if (!(neighborValue in nodeHashMap)) {
+                nodeHashMap[neighborValue] = new Node(neighborValue, []);
+                
+                dfs(neighbor);
+            }
+
+            nodeHashMap[currentValue].neighbors.push(nodeHashMap[neighborValue]);
+        }
+    }
+
+    dfs(node);
+
+    return Object.values(nodeHashMap)[0];
+}
