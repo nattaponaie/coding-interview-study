@@ -36,7 +36,6 @@ grid[i][j] is '0' or '1'.
  var numIslands = function(grid) {
     const rows = grid.length;
     const columns = grid[0].length;
-    const visited = new Set(); // O(M*N) space
     
     const bfs = (rowIdx, colIdx) => {
         const queue = [[rowIdx, colIdx]];
@@ -44,21 +43,20 @@ grid[i][j] is '0' or '1'.
             const position = queue.shift();
             const positionRow = position[0];
             const positionCol = position[1];
-            visited.add(positionRow + ',' + positionCol)
 
             const directions = [[positionRow - 1, positionCol], [positionRow, positionCol + 1], [positionRow + 1, positionCol], [positionRow, positionCol - 1]];
             
             if (grid[positionRow][positionCol] === '1') {
+                grid[positionRow][positionCol] = '#';
+
                 for (let directionIdx = 0; directionIdx < directions.length; directionIdx++) {
                     const currentDirection = directions[directionIdx];
                     const directionRow = currentDirection[0]
                     const directionCol = currentDirection[1]
                     if ((directionRow >= 0 && directionRow < rows)
                        && (directionCol >= 0 && directionCol < columns)
-                       && (grid[directionRow][directionCol] === '1')
-                       && (!visited.has(directionRow + ',' + directionCol))) {
+                       && (grid[directionRow][directionCol] === '1')) {
                         queue.push([directionRow, directionCol])
-                        visited.add(directionRow + ',' + directionCol)
                     }
                 }
             }
@@ -69,7 +67,7 @@ grid[i][j] is '0' or '1'.
     for (let rowIdx = 0; rowIdx < rows; rowIdx++) {
         for (let colIdx = 0; colIdx < columns; colIdx++) {
             const currentPosition = grid[rowIdx][colIdx];
-            if (currentPosition === '1' && !visited.has(rowIdx + ',' + colIdx)) {
+            if (currentPosition === '1') {
                 bfs(rowIdx, colIdx);
                 islandsCount += 1;
             }
