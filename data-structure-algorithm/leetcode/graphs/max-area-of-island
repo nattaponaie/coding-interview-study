@@ -69,3 +69,57 @@ var maxAreaOfIsland = function(grid) {
 Time complexity: O(M*N), As we visit each area only once
 Space complexity: O(1) no extra space needed if we are not counting call stack of recursion.
 if it's counted, the space will take O(M*N) 
+
+var maxAreaOfIsland = function(grid) {
+    let maxAreaOfIsland = 0;
+    if (grid.length === 0) return maxAreaOfIsland;
+
+    const columnLength = grid[0].length;
+    const rowLength = grid.length;
+    
+    const bfs = (rowIdx, columnIdx) => {
+        let islandCount = 0;
+        const queue = [[rowIdx, columnIdx]];
+        while (queue.length > 0) {
+            const currPosition = queue.shift();
+            const positionRowIdx = currPosition[0];
+            const positionColIdx = currPosition[1];
+
+            if (grid[positionRowIdx][positionColIdx] !== 1) continue;
+            grid[positionRowIdx][positionColIdx] = -1;
+            islandCount += 1;
+
+            const directions = [[positionRowIdx-1, positionColIdx], [positionRowIdx, positionColIdx+1], [positionRowIdx+1, positionColIdx],
+                [positionRowIdx, positionColIdx-1],
+            ];
+
+            for (let directionIdx = 0; directionIdx < directions.length; directionIdx++) {
+                const direction = directions[directionIdx];
+                const directionRowIdx = direction[0];
+                const directionColIdx = direction[1];
+
+                if (directionRowIdx < 0 || directionRowIdx >= rowLength
+                || directionColIdx < 0 || directionColIdx >= columnLength) continue;
+
+                if (grid[directionRowIdx][directionColIdx] !== 1) {
+                    grid[directionRowIdx][directionColIdx] = -1
+                    continue;
+                }
+
+                queue.push([directionRowIdx, directionColIdx]);
+            }
+        }
+
+        return islandCount;
+    }
+
+    for (let rowIdx = 0; rowIdx < rowLength; rowIdx++) {
+        for (let columnIdx = 0; columnIdx < columnLength; columnIdx++) {
+            if (grid[rowIdx][columnIdx] === 1) {
+                maxAreaOfIsland = Math.max(maxAreaOfIsland, bfs(rowIdx, columnIdx));
+            }
+        }
+    }
+    
+    return maxAreaOfIsland;
+}
