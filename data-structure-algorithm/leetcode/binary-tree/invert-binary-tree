@@ -48,3 +48,22 @@ var invertTree = function(root) {
 
 Time complexity: We only iterates through each node only once. Therefore, it will take O(N) time.
 Space complexity: As we are using BFS method so it need O(N) space to store each node;
+
+
+// DFS Approach
+var invertTree = function(root) {
+    const dfs = (node) => {
+        if (node === null) return;
+        const cloneNodeLeft = node.left;
+        node.left = node.right
+        node.right = cloneNodeLeft;
+
+        dfs(node.left);
+        dfs(node.right);
+
+    }
+
+    dfs(root);
+
+return root;
+};
