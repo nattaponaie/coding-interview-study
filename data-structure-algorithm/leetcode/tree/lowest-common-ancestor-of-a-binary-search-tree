@@ -66,3 +66,15 @@ var lowestCommonAncestor = function(root, p, q) {
 
 Time complexity: O(N) as we uses DFS
 Space complexity: O(N) for recursion stack
+
+var lowestCommonAncestor = function(root, p, q) {
+    let currentNode = root;
+    while (currentNode) {
+      if (p.val > currentNode.val && q.val > currentNode.val) currentNode = currentNode.right;
+      else if (p.val < currentNode.val && q.val < currentNode.val) currentNode = currentNode.left;
+      else return currentNode;
+    }
+  };
+
+Time complexity: O(logN) since we know which direction to go in each traversal and we only visit each node only once. 
+Space Complexity: O(1)
