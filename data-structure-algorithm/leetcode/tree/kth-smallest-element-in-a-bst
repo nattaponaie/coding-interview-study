@@ -1,0 +1,93 @@
+Given the root of a binary search tree, and an integer k, 
+return the kth smallest value (1-indexed) of all the values of the nodes in the tree.
+
+
+Example 1:
+Input: root = [3,1,4,null,2], k = 1
+Output: 1
+
+Example 2:
+Input: root = [5,3,6,2,4,null,null,1], k = 3
+Output: 3
+
+Constraints:
+The number of nodes in the tree is n.
+1 <= k <= n <= 104
+0 <= Node.val <= 104
+ 
+Follow up: If the BST is modified often (i.e., we can do insert and delete operations) 
+and you need to find the kth smallest frequently, how would you optimize?
+
+#1 HeapSort
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @param {number} k
+ * @return {number}
+ */
+var kthSmallest = function(root, k) {
+  const maxHeap = new MinPriorityQueue({
+    compare: (x, y) => y-x,
+  });
+
+  const dfs = (node) => {
+    if (!node) return;
+    
+    const nodeVal = node.val;
+    if (maxHeap.size() < k) maxHeap.enqueue(nodeVal);
+    else if (nodeVal < maxHeap.front()) {
+      maxHeap.dequeue();
+      maxHeap.enqueue(nodeVal);
+    }
+
+    dfs(node.left);
+    dfs(node.right);
+  }
+
+  dfs(root);
+
+  return maxHeap.front();
+
+};
+
+Time complexity: O(N*logN)
+Space complexity: O(N + logN)
+
+# BFS Optimal solution
+
+var kthSmallest = function(root, k) {
+  const stack = [];
+  const inOrderList = [];
+  let currentNode = root;
+  
+  while (stack.length > 0 || currentNode) {
+    while (currentNode) {
+      stack.push(currentNode);
+      currentNode = currentNode.left
+    }
+
+    if (stack.length > 0) {
+      currentNode = stack.pop();
+      inOrderList.push(currentNode);
+    }
+    if (inOrderList.length >= k) return inOrderList[k-1].val;
+
+    currentNode = currentNode.right;
+  }
+
+  return inOrderList[k-1].val;
+};
+
+Time complexity
+	O(H+K) as we traversed through the tree to the left most sub tree as H represents as 
+    the Tree height and K is the amount of times that we need to traverse next after 
+    reaching the bottom of the Tree in order to get the K smallest element.
+Space Complexity
+	The worst space complexity would be O(H+K) as we stored all the visited nodes from the path in the Stack plus number of K smallest elements.
