@@ -1,0 +1,20 @@
+S: Single Responsibility
+    - A class should have only one reason to change.
+    - Need to think more about class's name and all the functionalities should not go beyond the meaning
+O: Open Closed
+    - Relate with Polymorphism from OOP which can adapt functionalities to another circumstances but still stay in the scope.
+    - Method Overriding
+    - Method Overloading
+L: Liskov Substitution
+    - How to use Inheritance from OOP
+    - The functionalities on sub class should behave the same way as its super class
+    - i.e, A bicycle sub class cannot use startEngine method from its Vehicle super class
+        - this is because it violate the behavior of its origial functionality
+        - solution: add Motorized and Manual classes that inherit from Vehicle class
+                    and make Bicycle class inherit from Manual class instead of Vehical class
+I: Interface Segregation
+    - Sub class should not have methods from interface that not being used and required
+    - Instead of having fat interface -> make it lean interface
+D: Dependency Inversion
+    - High-level module should be inject implementation from low-level module directly but it should be abstraction instead
+    - i.e, dependency injection in C# is a technique for achieving Dependency Inversion principle.
