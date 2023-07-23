@@ -9,8 +9,8 @@ class Solution(object):
 
         for n in nums:
             if n in hashed:
-                return true
+                return True
             hashed.add(n)
 
-        return false
+        return False
         
