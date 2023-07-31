@@ -1,0 +1,15 @@
+/**
+ * @param {number[]} nums
+ * @param {number} target
+ * @return {number[]}
+ */
+var twoSum = function(nums, target) {
+    const hashMap = {} // 2:0
+    for (let index = 0; index < nums.length; index++) {
+        const num = nums[index];
+        const subtract = target - num;
+        if (subtract in hashMap) return [index, hashMap[subtract]]
+
+        hashMap[num] = index;
+    }
+};
