@@ -1,0 +1,39 @@
+/**
+ * @param {number[]} nums
+ * @param {number} k
+ * @return {number[]}
+ */
+var topKFrequent = function(nums, k) {
+    // 0, 1, 2, 3, 4, 5, 6
+    //[],[3],[2],[1],[],[],[]
+
+    // result [1,2] 
+
+    const numCountHashMap = {} // O(N) space
+    for (const num of nums) { // O(N) time
+        if (!(num in numCountHashMap)) numCountHashMap[num] = 0
+        numCountHashMap[num] += 1;
+    }
+
+    const kFrequentList = Array(nums.length + 1).fill(0).map(() => []); // O(N) space
+    for (const [num, count] of Object.entries(numCountHashMap)) { // O(N) time
+        kFrequentList[count].push(num);
+    }
+
+    const result = [];
+    let currentKFrequentListIndex = kFrequentList.length - 1;
+    while (result.length < k && currentKFrequentListIndex >= 0) { // O(N) time
+        const numsInThisFrequent = kFrequentList[currentKFrequentListIndex];
+        if (numsInThisFrequent.length === 0) {
+            currentKFrequentListIndex -= 1;
+            continue;
+        }
+        result.push(...numsInThisFrequent.slice(0, k - result.length))
+        currentKFrequentListIndex -= 1;
+    }
+
+    return result;
+};
+
+Time complexity: O(N)
+Space complexity: O(N)
