@@ -1,0 +1,73 @@
+Determine if a 9 x 9 Sudoku board is valid. Only the filled cells need to be validated according to the following rules:
+
+Each row must contain the digits 1-9 without repetition.
+Each column must contain the digits 1-9 without repetition.
+Each of the nine 3 x 3 sub-boxes of the grid must contain the digits 1-9 without repetition.
+Note:
+
+A Sudoku board (partially filled) could be valid but is not necessarily solvable.
+Only the filled cells need to be validated according to the mentioned rules.
+
+Input: board = 
+[["5","3",".",".","7",".",".",".","."]
+,["6",".",".","1","9","5",".",".","."]
+,[".","9","8",".",".",".",".","6","."]
+,["8",".",".",".","6",".",".",".","3"]
+,["4",".",".","8",".","3",".",".","1"]
+,["7",".",".",".","2",".",".",".","6"]
+,[".","6",".",".",".",".","2","8","."]
+,[".",".",".","4","1","9",".",".","5"]
+,[".",".",".",".","8",".",".","7","9"]]
+Output: true
+Example 2:
+
+Input: board = 
+[["8","3",".",".","7",".",".",".","."]
+,["6",".",".","1","9","5",".",".","."]
+,[".","9","8",".",".",".",".","6","."]
+,["8",".",".",".","6",".",".",".","3"]
+,["4",".",".","8",".","3",".",".","1"]
+,["7",".",".",".","2",".",".",".","6"]
+,[".","6",".",".",".",".","2","8","."]
+,[".",".",".","4","1","9",".",".","5"]
+,[".",".",".",".","8",".",".","7","9"]]
+Output: false
+Explanation: Same as Example 1, except with the 5 in the top left corner being modified to 8. Since there are two 8's in the top left 3x3 sub-box, it is invalid.
+
+/**
+ * @param {character[][]} board
+ * @return {boolean}
+ */
+var isValidSudoku = function(board) {
+    const rowsHashSet = Array(board.length + 1).fill(0).map(() => new Set());
+    const colsHashSet = Array(board.length + 1).fill(0).map(() => new Set());
+    const subBoxesHashSet = {};
+
+    for (let row = 0; row < board.length; row++) {
+      for (let col = 0; col < board[row].length; col++) {
+        const val = board[row][col];
+        const valKey = val === '.' ? `.${row}${col}` : val; // if digit is "." let's add [row][col]
+        
+        if (rowsHashSet[row].has(valKey)) return false; // duplicate digit found in row -> return false
+        rowsHashSet[row].add(valKey)
+
+        if (colsHashSet[col].has(valKey)) return false; // duplicate digit found in column -> return false
+        colsHashSet[col].add(valKey)
+
+        // calculate board position by dividing by 3 (grid size 3x3)
+        subBoxesKey = `${Math.floor(row / 3)},${Math.floor(col / 3)}`;
+        
+        if (!(subBoxesKey in subBoxesHashSet)) subBoxesHashSet[subBoxesKey] = new Set()
+
+        if (subBoxesHashSet[subBoxesKey].has(valKey)) return false; // duplicate digit found in this board
+        subBoxesHashSet[subBoxesKey].add(valKey);
+      }
+    }
+
+    return true;
+};
+
+Time complexity
+	O(ROWs * COLs)
+Space Complexity
+	O(ROWs * COLs)
