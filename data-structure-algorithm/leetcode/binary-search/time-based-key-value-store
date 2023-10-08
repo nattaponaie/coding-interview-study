@@ -1,0 +1,67 @@
+class TimeData  {
+    constructor(timestamp, value) {
+        this.timestamp = timestamp;
+        this.value = value;
+    }
+}
+
+
+var TimeMap = function() {
+    this.timeMap = {}
+    /**
+        {
+            "foo", [
+                {timestamp: 1, value: "bar"}
+            ]
+        }
+     */ 
+};
+
+/** 
+ * @param {string} key 
+ * @param {string} value 
+ * @param {number} timestamp
+ * @return {void}
+ */
+TimeMap.prototype.set = function(key, value, timestamp) {
+    if (!(key in this.timeMap)) this.timeMap[key] = [];
+    this.timeMap[key].push(new TimeData(timestamp, value))
+};
+
+/** 
+ * @param {string} key 
+ * @param {number} timestamp
+ * @return {string}
+ */
+TimeMap.prototype.get = function(key, timestamp) {
+    if (!(key in this.timeMap)) return '';
+
+    const timeDataArray = this.timeMap[key];
+    /**
+        [
+            {timestamp: 1, value: "bar"}
+        ]
+     */
+    let left = 0; // 0
+    let right = timeDataArray.length - 1; // 0
+    let maxTimeData = new TimeData(-1, '');
+    while (left <= right) {
+        const middleIdx = Math.floor((left + right) / 2); // 0
+        const middleNum = timeDataArray[middleIdx] 
+        // {timestamp: 1, value: "bar"}
+
+        if (timestamp === middleNum.timestamp) return middleNum.value;
+        else if (timestamp > middleNum.timestamp) {
+            left = middleIdx + 1;
+            maxTimeData = middleNum
+        } else right = middleIdx - 1;
+    }
+    return maxTimeData.value
+};
+
+/** 
+ * Your TimeMap object will be instantiated and called as such:
+ * var obj = new TimeMap()
+ * obj.set(key,value,timestamp)
+ * var param_2 = obj.get(key,timestamp)
+ */
