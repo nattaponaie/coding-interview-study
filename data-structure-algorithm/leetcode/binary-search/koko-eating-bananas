@@ -1,0 +1,26 @@
+/**
+ * @param {number[]} piles
+ * @param {number} h
+ * @return {number}
+ */
+var minEatingSpeed = function(piles, h) {
+    let left = 1;
+    let right = Math.max(...piles); 
+    let minK = right; 
+    while (left <= right) {
+        const currentK = Math.floor((left + right) / 2); 
+
+        let hourCount = 0;
+        for (const pile of piles) {
+            hourCount += Math.ceil(pile / currentK);
+        }
+
+        if (hourCount <= h) {
+            right = currentK - 1;
+            minK = Math.min(minK, currentK);
+        }
+        else left = currentK + 1;
+    }
+
+    return minK;
+};
