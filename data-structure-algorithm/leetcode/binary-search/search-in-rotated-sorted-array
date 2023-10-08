@@ -1,0 +1,46 @@
+/**
+ * @param {number[]} nums
+ * @param {number} target
+ * @return {number}
+ */
+var search = function(nums, target) {
+    let left = 0; 
+    let right = nums.length - 1;
+    let minValue = { index: -1, val: Infinity };
+    while (left <= right) {
+        const middleIdx = Math.floor((right + left) / 2);
+        const middleNum = nums[middleIdx];
+        if (middleNum < minValue.val) {
+            minValue.val = middleNum
+            minValue.index = middleIdx
+        }
+
+        const leftNum = nums[left];
+        const rightNum = nums[right];
+        if (leftNum < rightNum) {
+            if (leftNum < minValue.val) {
+                minValue.val = leftNum
+                minValue.index = left
+            }
+        }
+
+        if (middleNum >= leftNum) {
+            left = middleIdx + 1;
+        } else right = middleIdx - 1;
+    }
+
+    const binarySearch = (leftIdx, rightIdx) => {
+        while (leftIdx <= rightIdx) {
+            const middleIdx = Math.floor((rightIdx + leftIdx) / 2);
+            const middleNum = nums[middleIdx];
+
+            if (middleNum === target) return middleIdx;
+            else if (target < middleNum) rightIdx = middleIdx - 1;
+            else leftIdx = middleIdx + 1;
+        }
+        return -1;
+    }
+
+    let result = binarySearch(minValue.index, nums.length - 1);
+    return result !== -1 ? result : binarySearch(0, minValue.index - 1);
+};
