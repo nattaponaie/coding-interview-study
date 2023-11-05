@@ -61,3 +61,36 @@ Therefore, the algorithm will asymptotically equivalent to O(N*N!)
 
 Space complexity: If we count result array then it the space will take O(N*N!).
 In the other hand, O(N)
+
+
+--
+
+Solution #2
+
+/**
+ * @param {number[]} nums
+ * @return {number[][]}
+ */
+var permute = function(nums) {
+    const result = [];
+
+    const dfs = (permutation, candidates) => {
+        if (permutation.length === candidates.length) {
+            result.push(permutation.slice())
+            return;
+        }
+
+        for (const candidate of candidates) {
+            if (permutation.includes(candidate)) continue;
+
+            permutation.push(candidate)
+
+            dfs(permutation, candidates)
+            permutation.pop();
+        }
+    }
+
+    dfs([], nums)
+
+    return result;
+};
