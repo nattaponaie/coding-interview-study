@@ -1,0 +1,33 @@
+/**
+ * @param {number[]} nums
+ * @param {number} k
+ * @return {number}
+ */
+var findKthLargest = function(nums, k) {
+    const minHeap = new MinPriorityQueue({ // O(K) space
+        compare: (x,y) => x-y
+    });
+
+    for (const num of nums) { // O(N) time
+        if (minHeap.size() === k) {
+            if (num > minHeap.front()) {
+                minHeap.dequeue() // O(logK) time
+                minHeap.enqueue(num) // O(logK) time
+            }
+        } else {
+            minHeap.enqueue(num) // O(logK) time
+        }
+    }
+
+    return minHeap.front() // O(1) time
+};
+
+Solution # MinHeap
+We need the Kth largest elements (sorted not distinct). 
+That means, we have to keep track of the largest elements in K size and the first element in the Heap has to be the lowest element. 
+That being said, the minHeap can be used to solve this question.
+
+Time complexity
+	O(N * logK) for iterating through the given array O(N) and adding/removing element from the minHeap O(logK)
+Space Complexity
+	O(K) for storing all the K largest elements.
