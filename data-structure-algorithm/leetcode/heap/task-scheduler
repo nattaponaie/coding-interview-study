@@ -1,0 +1,118 @@
+/**
+ * @param {character[]} tasks
+ * @param {number} n
+ * @return {number}
+ */
+
+class Task {
+    constructor(frequency, queue) {
+        this.frequency = frequency;
+        this.queue = queue;
+    }
+}
+
+var leastInterval = function(tasks, n) {
+    const frequencyHashMap = {} // O(26) space
+
+    for (const task of tasks) { // O(N) time
+        if (!(task in frequencyHashMap)) frequencyHashMap[task] = 0;
+        frequencyHashMap[task] += 1;
+    }
+
+    const maxHeap = new MaxPriorityQueue({ // O(26) space
+        compare: (x,y) => y.frequency-x.frequency
+    })
+
+    for (const [_key, value] of Object.entries(frequencyHashMap)) { // O(N) time
+        maxHeap.enqueue(new Task(value, 0))
+    }
+
+    // O(26) space
+    const queue = []; // []->[{2:3}]->[{2:3},{2:4}]
+    let timeInterval = 0; // 0->1->2
+
+    // O(N * log26 * M) time where N is the tasks length and M is the number of cooldown period (n)
+    while (maxHeap.size() > 0 || queue.length > 0) { // 2 || 0 -> 1 || 1
+        timeInterval += 1;
+
+        const task = maxHeap.dequeue(); // {3,0}->{3:0}
+        if (task) {
+            task.frequency -= 1; // {2:0}->{2:0}
+            task.queue = timeInterval + n; // {2:3}->{2:4}
+            if (task.frequency > 0) queue.push(task)
+        }
+
+        const queueTask = queue[0] // {2:2}->{2:2}
+        if (queueTask && queueTask.queue === timeInterval) {
+            maxHeap.enqueue(queueTask)
+            queue.shift()
+        }
+    }
+
+    return timeInterval;
+};/**
+ * @param {character[]} tasks
+ * @param {number} n
+ * @return {number}
+ */
+
+class Task {
+    constructor(frequency, queue) {
+        this.frequency = frequency;
+        this.queue = queue;
+    }
+}
+
+var leastInterval = function(tasks, n) {
+    const frequencyHashMap = {} // O(26) space
+
+    for (const task of tasks) { // O(N) time
+        if (!(task in frequencyHashMap)) frequencyHashMap[task] = 0;
+        frequencyHashMap[task] += 1;
+    }
+
+    const maxHeap = new MaxPriorityQueue({ // O(26) space
+        compare: (x,y) => y.frequency-x.frequency
+    })
+
+    for (const [_key, value] of Object.entries(frequencyHashMap)) { // O(N) time
+        maxHeap.enqueue(new Task(value, 0))
+    }
+
+    // O(26) space
+    const queue = []; // []->[{2:3}]->[{2:3},{2:4}]
+    let timeInterval = 0; // 0->1->2
+
+    // O(N * log26 * M) time where N is the tasks length and M is the number of cooldown period (n)
+    while (maxHeap.size() > 0 || queue.length > 0) { // 2 || 0 -> 1 || 1
+        timeInterval += 1;
+
+        const task = maxHeap.dequeue(); // {3,0}->{3:0}
+        if (task) {
+            task.frequency -= 1; // {2:0}->{2:0}
+            task.queue = timeInterval + n; // {2:3}->{2:4}
+            if (task.frequency > 0) queue.push(task)
+        }
+
+        const queueTask = queue[0] // {2:2}->{2:2}
+        if (queueTask && queueTask.queue === timeInterval) {
+            maxHeap.enqueue(queueTask)
+            queue.shift()
+        }
+    }
+
+    return timeInterval;
+};
+
+Solution # MaxHeap + Queue
+The intuition of this solution is to start with the most frequency character first because we need the least number of processing time. 
+If we randomly choose the character we will not be able to achieve this condition.
+Furthermore, the MaxHeap is introduced in order to keep track of the most frequent character (task). 
+In addition, when iterating through the maxHeap we have to use the Queue to keep track of the incoming task to be processed in the future (time interval). 
+By doing that, we have to keep track of the time that the task will be processed again by using “currentTime + n” equation. 
+
+
+Time complexity
+	O(N * log26 * M) where N is the tasks length and M is the number of cooldown period (n)
+Space Complexity
+	O(26) or O(1) where 26 represents all the English characters
