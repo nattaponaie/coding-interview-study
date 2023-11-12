@@ -1,0 +1,104 @@
+class Tweet {
+    constructor(userId, tweetId, timestamp) {
+        this.userId = userId;
+        this.tweetId = tweetId;
+        this.timestamp = timestamp;
+    }
+}
+
+class Follow {
+    constructor(userId, followers) {
+        this.userId = userId;
+        this.followers = followers;
+    }
+}
+
+
+var Twitter = function() {
+    this.maximumRecentTweets = 10;
+    this.tweetHashMap = {} // key: userId, value: Array(Tweet)
+    this.followHashMap = {} // key: userId, value: HashMap(FolloweeId)
+    this.timestamp = 0;
+};
+
+/** 
+ * @param {number} userId 
+ * @param {number} tweetId
+ * @return {void}
+ */
+Twitter.prototype.postTweet = function(userId, tweetId) {
+    if (!(userId in this.tweetHashMap)) {
+        this.tweetHashMap[userId] = []
+    }
+
+    // we can save more space but it requires extra O(N) time
+    // if (this.tweetHashMap[userId].length === this.maximumRecentTweets) this.tweetHashMap[userId].shift()
+
+    this.tweetHashMap[userId].push(new Tweet(userId, tweetId, this.timestamp)) // O(1) time
+    this.timestamp += 1;
+};
+
+/** 
+ * @param {number} userId
+ * @return {number[]}
+ */
+Twitter.prototype.getNewsFeed = function(userId) {
+    const newFeedMinHeap = new MinPriorityQueue({
+        compare: (x,y) => x.timestamp - y.timestamp
+    })
+
+    // userId's feeds
+    this.tweetHashMap[userId]?.map(tweet => {
+        if (newFeedMinHeap.size() === this.maximumRecentTweets) newFeedMinHeap.dequeue()
+        newFeedMinHeap.enqueue(tweet)
+    }) // O(m * log(m)) time
+
+    // followers's feeds
+    const followers = this.followHashMap[userId];
+    if (Object.keys(followers || {}).length > 0) {
+        for (const [followerId] of Object.entries(followers)) { // O(F * m * log(m)) time
+            this.tweetHashMap[followerId]?.map(tweet => {
+                if (newFeedMinHeap.size() === this.maximumRecentTweets) newFeedMinHeap.dequeue()
+                newFeedMinHeap.enqueue(tweet)
+            })
+        }
+    }
+
+    // O(m) time
+    return newFeedMinHeap.toArray().reverse().map(feed => feed.tweetId);
+};
+
+/** 
+ * @param {number} followerId 
+ * @param {number} followeeId
+ * @return {void}
+ */
+Twitter.prototype.follow = function(followerId, followeeId) { // O(1) time
+    if (!(followerId in this.followHashMap)) {
+        this.followHashMap[followerId] = {}
+    }
+
+    if (!(followeeId in this.followHashMap[followerId])) {
+        this.followHashMap[followerId][followeeId] = 1
+    }
+};
+
+/** 
+ * @param {number} followerId 
+ * @param {number} followeeId
+ * @return {void}
+ */
+Twitter.prototype.unfollow = function(followerId, followeeId) { // O(1) time
+    if (!(followerId in this.followHashMap)) return;
+
+    delete this.followHashMap[followerId][followeeId]
+};
+
+/** 
+ * Your Twitter object will be instantiated and called as such:
+ * var obj = new Twitter()
+ * obj.postTweet(userId,tweetId)
+ * var param_2 = obj.getNewsFeed(userId)
+ * obj.follow(followerId,followeeId)
+ * obj.unfollow(followerId,followeeId)
+ */
