@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using DecoratorExample1 = Interview.Core.Decorator.Main;
 using ObserverExample1 = Interview.Core.Observer.Main;
+using FactoryMethodExample1 = Interview.Core.Factory.FactoryMethod.Main;
 
 namespace Interview.Controllers;
 
@@ -23,8 +24,9 @@ public class WeatherForecastController : ControllerBase
     [HttpGet(Name = "GetWeatherForecast")]
     public string[] Get()
     {
-        DecoratorExample1.Execute();
-        ObserverExample1.Execute();
+        // DecoratorExample1.Execute();
+        // ObserverExample1.Execute();
+        FactoryMethodExample1.Execute();
         return Summaries;
     }
 }
