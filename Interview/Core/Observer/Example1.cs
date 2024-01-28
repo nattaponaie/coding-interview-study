@@ -9,8 +9,13 @@ interface IObservable {
     public void Notify<T>(T value);
 }
 
-class Sender : IObservable {
+interface ISender {
+    public List<string> GetMessages();
+}
+
+class Sender : IObservable, ISender {
     private readonly List<IObserver>? _observers = [];
+    private readonly List<string> _messages = [];
 
     public void Add(IObserver observer)
     {
@@ -25,19 +30,28 @@ class Sender : IObservable {
 
     public void SendMessage(string text) {
         Console.WriteLine("Send: " + text);
+        _messages.Add(text);
         Notify(text);
+    }
+
+    public List<string> GetMessages()
+    {
+        return _messages;
     }
 }
 
 class Receiver : IObserver
 {
+    private readonly Sender _sender;
     private readonly string _name;
-    public Receiver(string name) {
+    public Receiver(Sender sender, string name) {
+        _sender = sender;
         _name = name;
     }
     public void Update<T>(T text)
     {
         Console.WriteLine($"Receiver {_name}: {text}");
+        _sender.GetMessages()?.ForEach(msg => Console.WriteLine($"msg: {msg}"));
     }
 }
 
@@ -45,9 +59,9 @@ public class Main {
     public static void Execute() {
         var sender = new Sender();
 
-        var receiver = new Receiver("A");
-        var receiver2 = new Receiver("B");
-        var receiver3 = new Receiver("C");
+        var receiver = new Receiver(sender, "A");
+        var receiver2 = new Receiver(sender, "B");
+        var receiver3 = new Receiver(sender, "C");
         sender.Add(receiver);
         sender.Add(receiver2);
         sender.Add(receiver3);
