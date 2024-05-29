@@ -1,0 +1,37 @@
+const merge = (list1, list2) => {
+    let list1Idx = 0;
+    let list2Idx = 0;
+
+    const result = [];
+
+    while (list1Idx < list1.length || list2Idx < list2.length) {
+        const [start1, end1] = list1[list1Idx] || [Infinity, Infinity]
+        const [start2, end2] = list2[list2Idx] || [Infinity, Infinity]
+        let nextInterval;
+
+        if (start1 <= start2) {
+            nextInterval = [start1, end1]
+            list1Idx += 1;
+        } else {
+            nextInterval = [start2, end2]
+            list2Idx += 1;
+        }
+
+        if (result.length > 0 && nextInterval[0] <= result[result.length - 1][1]) {
+            result[result.length - 1][0] = Math.min(nextInterval[0], result[result.length - 1][0])
+            result[result.length - 1][1] = Math.max(nextInterval[1], result[result.length - 1][1])
+        } else result.push(nextInterval)
+    }
+    return result;
+}
+/**
+ * 
+ * [1,5], [10,14]l1, [16,18]
+ * [2,6], [8,10], [11,20]l2
+ * 
+ * result = [[1,6],[8,10]]
+ */
+
+console.log(merge([[1,5], [10,14], [16,18]], [[2,6], [8,10], [11,20]]));
+console.log(merge([[1,5], [10,14], [16,18]], [[2,6], [8,10]]));
+console.log(merge([[1,5], [16,18]], [[2,6], [8,10]]));
